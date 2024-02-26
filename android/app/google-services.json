@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "903984955018",
+    "project_id": "scalp-smart-pbl-project",
+    "storage_bucket": "scalp-smart-pbl-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:903984955018:android:994d1cfcd7445babfc7773",
+        "android_client_info": {
+          "package_name": "com.pblprojectgrp1.hairloss_detection_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLhX334pGZ7nTM2dKoH_I0uf5FTNfsh6k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:903984955018:android:8005dd0eb67ae3bffc7773",
+        "android_client_info": {
+          "package_name": "com.scalpsmart.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLhX334pGZ7nTM2dKoH_I0uf5FTNfsh6k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
