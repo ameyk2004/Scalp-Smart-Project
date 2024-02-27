@@ -6,8 +6,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:scalp_smart/auth/authServices.dart';
 import 'package:scalp_smart/widgets/widget_support.dart';
+import '../colors.dart';
 import '../firebase_service/database.dart';
 import '../widgets/menuDrawer.dart';
 import '../screens/chat_page.dart';
@@ -124,12 +126,32 @@ class _DoctorPageBodyState extends State<DoctorPageBody> {
 
 
   Stream<QuerySnapshot>? userStream;
+  List assigned_patients = [];
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  Future<void> _refresh() async {
+    await getAssignedPatients();
+    return await Future.delayed(Duration(seconds: 2));
+  }
 
   getOnLooad() async{
     userStream = await DatabaseMethods().getUserDetails();
     setState(() {
+    });
+  }
 
+
+
+  getAssignedPatients() async
+  {
+    final docSnapshot = await _firestore.collection("Users").doc(_auth.currentUser!.uid).get();
+    if (docSnapshot.exists) {
+      assigned_patients = docSnapshot.data()?["assigned_patients"] ?? [];
+
+    }
+
+    setState(() {
     });
   }
 
@@ -141,64 +163,78 @@ class _DoctorPageBodyState extends State<DoctorPageBody> {
 
       if (snapshot.hasData) {
         List<DocumentSnapshot> documents = snapshot.data.docs;
+
         return Padding(
           padding: const EdgeInsets.only(top:20),
-          child: ListView.separated(
-          itemCount: documents.length,
-            itemBuilder: (context, index){
+          child: LiquidPullToRefresh(
+            onRefresh: _refresh,
+            height: 250,
+            animSpeedFactor: 1.5,
+            color: appBarColor,
+            child: ListView.separated(
+            itemCount: documents.length,
+              itemBuilder: (context, index){
 
-              DocumentSnapshot documentSnapshot = snapshot.data.docs[index];
-              if(documentSnapshot["image"] !="")
-                {
-                  annotatedImage = Image.memory(base64Decode(documentSnapshot["image"]));
-                }
-              else
-                {
-                  annotatedImage = null;
-                }
+                DocumentSnapshot documentSnapshot = snapshot.data.docs[index];
 
 
-              return InkWell(
-                onTap: ()
-                {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ChatPage(receiver: documentSnapshot["name"], recieverId: documentSnapshot.id)));
-                },
-                child: Container(
-                  height: 130,
-                  color: Colors.grey.shade200,
-                  child: Stack(
-                    children: [
-                      Row(
+                if(documentSnapshot["image"] !="")
+                  {
+                    annotatedImage = Image.memory(base64Decode(documentSnapshot["image"]));
+                  }
+                else
+                  {
+                    annotatedImage = null;
+                  }
+
+
+
+                if(assigned_patients.contains(documentSnapshot["uid"])) {
+                  return InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (
+                          context) =>
+                          ChatPage(receiver: documentSnapshot["name"],
+                              recieverId: documentSnapshot.id)));
+                    },
+                    child: Container(
+                      height: 130,
+                      color: Colors.grey.shade200,
+                      child: Stack(
                         children: [
-
-
-                          Visibility(
-                            visible: annotatedImage == null,
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: Container(
-                                height: 130,
-                                width: 130,
-                                decoration: BoxDecoration(
-                                  image: const DecorationImage(
-                                    image: NetworkImage("https://static.vecteezy.com/system/resources/previews/014/489/917/non_2x/man-avatar-icon-flat-vector.jpg", ), // Assuming _image is a File
-                                    fit: BoxFit.cover, // Cover the container while maintaining aspect ratio
-                                    alignment: Alignment.topCenter, // Align the top of the image within the container
-                                  ),
-                                  border: Border.all(width: 1),
-                                  borderRadius: BorderRadius.circular(30),
+                          Row(
+                            children: [
+                              Visibility(
+                                visible: annotatedImage == null,
+                                child: Align(
+                                    alignment: Alignment.center,
+                                    child: Container(
+                                      height: 130,
+                                      width: 130,
+                                      decoration: BoxDecoration(
+                                        image: const DecorationImage(
+                                          image: NetworkImage(
+                                            "https://static.vecteezy.com/system/resources/previews/014/489/917/non_2x/man-avatar-icon-flat-vector.jpg",),
+                                          // Assuming _image is a File
+                                          fit: BoxFit.cover,
+                                          // Cover the container while maintaining aspect ratio
+                                          alignment: Alignment
+                                              .topCenter, // Align the top of the image within the container
+                                        ),
+                                        border: Border.all(width: 1),
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                    )
                                 ),
-                              )
-                            ),
-                          ),
+                              ),
 
 
-                          Visibility(
-                            visible: annotatedImage!=null,
-                            child: Align(
-                                alignment: Alignment.center,
-                                child: annotatedImage != null
-                                    ? Container(
+                              Visibility(
+                                visible: annotatedImage != null,
+                                child: Align(
+                                    alignment: Alignment.center,
+                                    child: annotatedImage != null
+                                        ? Container(
                                       height: 130,
                                       width: 130,
                                       decoration: BoxDecoration(
@@ -216,63 +252,77 @@ class _DoctorPageBodyState extends State<DoctorPageBody> {
                                         ),
                                       ),
                                     )
-                                    : const SizedBox.shrink()
-                            ),
+                                        : const SizedBox.shrink()
+                                ),
+                              ),
+
+                              SizedBox(width: 20,),
+
+                              Expanded(
+                                child: Container(
+
+                                  padding: EdgeInsets.all(8),
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment
+                                          .start,
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .spaceBetween,
+                                      children: [
+                                        Text(documentSnapshot["name"],
+                                          style: AppWidget.boldTextStyle(),),
+                                        Text(documentSnapshot["email"],
+                                          style: TextStyle(fontSize: 17),
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,),
+                                        Text("Age : 20",
+                                            style: TextStyle(fontSize: 17)),
+                                        Text("Stage -  normal",
+                                            style: TextStyle(fontSize: 17)),
+                                      ],
+
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+
+                            ],
                           ),
 
-                          SizedBox(width: 20,),
+                          Visibility(
+                            visible: documentSnapshot["online"],
+                            child: Align(
+                              alignment: Alignment.topRight,
+                              child: Container(
+                                alignment: Alignment.topRight,
 
-                          Expanded(
-                            child: Container(
+                                margin: EdgeInsets.only(right: 10, top: 18),
 
-                              padding: EdgeInsets.all(8),
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(documentSnapshot["name"], style: AppWidget.boldTextStyle(),),
-                                    Text(documentSnapshot["email"], style: TextStyle(fontSize: 17), overflow: TextOverflow.ellipsis, maxLines: 1,),
-                                    Text("Age : 20", style : TextStyle(fontSize: 17)),
-                                    Text("Stage -  normal",style : TextStyle(fontSize: 17)),
-                                  ],
-
+                                height: 15,
+                                width: 15,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: Colors.green,
                                 ),
                               ),
                             ),
                           ),
-
-
                         ],
+
                       ),
+                    ),
+                  );
+                }
+                else
+                  {
+                    return SizedBox.shrink();
+                  }
 
-                      Visibility(
-                        visible: documentSnapshot["online"],
-                        child: Align(
-                          alignment: Alignment.topRight,
-                          child: Container(
-                            alignment: Alignment.topRight,
-
-                            margin: EdgeInsets.only(right: 10, top: 18),
-
-                            height: 15,
-                            width: 15,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color :Colors.green,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-
-                  ),
-                ),
-              );
-
-                }, separatorBuilder: (BuildContext context, int index) {
-            return SizedBox(height: 10,);
-          },),
+                  }, separatorBuilder: (BuildContext context, int index) {
+              return SizedBox(height: 10,);
+            },),
+          ),
         );
       } else {
         return Container();
@@ -285,6 +335,7 @@ class _DoctorPageBodyState extends State<DoctorPageBody> {
 @override
   void initState() {
     getOnLooad();
+    getAssignedPatients();
     super.initState();
   }
   @override

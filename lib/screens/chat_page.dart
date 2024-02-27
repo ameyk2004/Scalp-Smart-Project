@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:scalp_smart/chat_service/chat_service.dart';
 import 'package:scalp_smart/colors.dart';
+import 'package:scalp_smart/doctor_screens/image_thread_screen.dart';
 import 'package:scalp_smart/widgets/chat_bubble.dart';
 import 'package:intl/intl.dart';
 import 'package:scalp_smart/widgets/widget_support.dart';
@@ -42,6 +43,12 @@ class _ChatPageState extends State<ChatPage> {
 
       appBar: AppBar(
         title: Text(widget.receiver, style: AppWidget.headlineTextStyle(),),
+        actions: [
+          Padding(padding: EdgeInsets.only(right: 10),
+          child: IconButton(onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>ImageThreadScreen(patientId: widget.recieverId,)));
+          }, icon: Icon(Icons.image_search, size: 35,)))
+        ],
       ),
 
       body: Column(

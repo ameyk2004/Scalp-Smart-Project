@@ -37,7 +37,6 @@ class _ShopPageState extends State<ShopPage> {
         print(products);
       }
 
-
   }
 
   Future<void> _refresh() async {

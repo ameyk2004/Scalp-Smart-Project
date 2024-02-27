@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:scalp_smart/colors.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -21,16 +22,90 @@ class _DoctorRegistrationPageState extends State<DoctorRegistrationPage> {
 
   TextEditingController locationController = TextEditingController();
 
+  TextEditingController emailController = TextEditingController();
+
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  bool isPendingRequest = false;
+
 
   _sendMail() async {
     // Android and iOS
-    final uri =
-        'mailto:sn2204amey@gmail.com?subject=Doctor Onboarding Request&body=Hello%20Team Scalp Smart\nBelow are my details : \n\nName : ${nameController.text}\nQualification : ${qualificationContoller.text} \nExpirience : ${experienceController.text}\nLocation : ${locationController.text}';
-    final url = Uri.parse(uri);
-    await launchUrl(
-      url,
-      mode: LaunchMode.externalApplication,
-    );
+
+    if(!isPendingRequest)
+      {
+        await createDoctorPendingRequest();
+        final uri =
+            'mailto:sn2204amey@gmail.com?subject=Doctor Onboarding Request&body=Hello%20Team Scalp Smart\nBelow are my details : \n\nName : ${nameController.text}\nQualification : ${qualificationContoller.text} \nExpirience : ${experienceController.text}\nLocation : ${locationController.text}';
+        final url = Uri.parse(uri);
+        await launchUrl(
+          url,
+          mode: LaunchMode.externalApplication,
+        );
+      }
+    else
+      {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text("Multiple Requests Not Allowed"),
+            content: Text("Your request has already been submitted. Please wait for approval before submitting another request."),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text("OK"),
+              ),
+            ],
+          ),
+        );
+      }
+
+    isPendingRequest = true;
+
+
+  }
+
+  createDoctorPendingRequest() async
+  {
+    try
+    {
+      await _firestore.collection("Pending_Approvals").add(
+          {
+            "name" : nameController.text,
+            "qualification" : qualificationContoller.text,
+            "experience" : experienceController.text,
+            "location" : locationController.text,
+            "email" : emailController.text,
+          }
+      );
+
+      showDialog(context: context, builder: (context)=>AlertDialog(
+        title: Text("Request Sent Successfully"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("OK"),
+          ),
+        ],
+      ));
+    }
+    catch(e)
+    {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Error"),
+          content: Text("An error occurred while submitting the request."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("OK"),
+            ),
+          ],
+        ),
+      );
+    }
+
 
   }
 
@@ -89,7 +164,7 @@ class _DoctorRegistrationPageState extends State<DoctorRegistrationPage> {
                       child: Container(
                         width: MediaQuery.of(context).size.width,
                         padding: EdgeInsets.all(20),
-                        height: 500,
+                        height: 550,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(50),
@@ -102,7 +177,11 @@ class _DoctorRegistrationPageState extends State<DoctorRegistrationPage> {
                               children: [
                                 Text("Doctor Registration", style: AppWidget.headlineTextStyle(),),
                                 SizedBox(height: 30,),
+
+
                                 CustomTextField(hintText: "Name", icon: Icon(Icons.person_outline), obscureText: false, textEditingController: nameController, ),
+                                SizedBox(height: 15,),
+                                CustomTextField(hintText: "Email", icon: Icon(Icons.mail), obscureText: false, textEditingController: emailController,),
                                 SizedBox(height: 15,),
                                 CustomTextField(hintText: "Qualification", icon: Icon(Icons.school_outlined), obscureText: false, textEditingController: qualificationContoller,),
                                 SizedBox(height: 15,),

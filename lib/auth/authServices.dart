@@ -62,4 +62,21 @@ class AuthService extends ChangeNotifier{
       throw e.toString();
     }
   }
+
+  Future<UserCredential> createNewDoctor(String email, String name, String qualification, String location, String experience) async
+  {
+    UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: "Doctor1234");
+    _firestore.collection("Users").doc(userCredential.user!.uid).set({
+      'uid': userCredential.user!.uid,
+      'email': email,
+      'name': name,
+      'image' : 'https://santevitahospital.com/img/vector_design_male_11zon.webp',
+      'qualification' : qualification,
+      'location' :location,
+      'experience' : experience,
+      'online' : false,
+      'role' : 'Doctor',
+    });
+    return userCredential;
+  }
 }

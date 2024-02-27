@@ -38,9 +38,17 @@ class DatabaseMethods{
         return userSnapShot['image'];
       }
 
-
   }
 
+  Future<Stream<QuerySnapshot<Map<String, dynamic>>>> getPendingRequests()
+  async {
+    return await FirebaseFirestore.instance.collection("Pending_Approvals").snapshots();
+  }
+
+  Future<void> deletePendingDoctor(String uid)
+  async {
+    await  FirebaseFirestore.instance.collection("Pending_Approvals").doc(uid).delete();
+  }
 
 
   Future<String?> getUserRole() async{
@@ -58,20 +66,24 @@ class DatabaseMethods{
     return null; // User not found or role not defined
   }
 
-  Future<bool> isUserPatient(User currentUser) async
+  Future<String> UserRole(User currentUser) async
   {
     String? UserRole = await getUserRole();
 
     if(UserRole=="Patient")
       {
         print("patient");
-        return true;
+        return "Patient";
+      }
+    else if (UserRole=="Doctor")
+      {
+        return "Doctor";
       }
     else
-      {
-        print("doctor");
-        return false;
-      }
+    {
+      return "Admin";
+    }
+
   }
 
 }

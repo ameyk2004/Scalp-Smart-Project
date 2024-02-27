@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scalp_smart/colors.dart';
@@ -20,6 +21,8 @@ class _DoctorDetailsPageState extends State<DoctorDetailsPage> {
 
 
   Stream<QuerySnapshot>? doctorStream;
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseAuth _auth = FirebaseAuth.instance;
 
 
   getOnLooad() async{
@@ -37,13 +40,25 @@ class _DoctorDetailsPageState extends State<DoctorDetailsPage> {
 
   Widget allDoctorDetails()
   {
+    var patient_list = [];
     return StreamBuilder(stream: doctorStream, builder: (context, AsyncSnapshot snapshot){
       return snapshot.hasData ? ListView.separated(itemBuilder: (context, index){
         DocumentSnapshot documentSnapshot = snapshot.data.docs[index];
 
         return InkWell(
-          onTap: () {
+          onTap: () async{
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ChatPage(receiver: documentSnapshot["name"], recieverId: documentSnapshot.id,)));
+            final  docSnapshot = await  _firestore.collection("Users").doc(documentSnapshot.id).get();
+            if (docSnapshot.exists) {
+              List<dynamic> historyFromFirestore = docSnapshot.data()?['assigned_patients'] ?? [];
+
+              patient_list = historyFromFirestore;
+              patient_list.add(_auth.currentUser!.uid);
+
+              await  _firestore.collection("Users").doc(documentSnapshot.id).update(
+                  {'assigned_patients' : patient_list});
+            }
+
           },
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 20),

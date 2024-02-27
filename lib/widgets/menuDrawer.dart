@@ -1,13 +1,42 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:scalp_smart/colors.dart';
 
 import '../auth/authServices.dart';
 
-class CustomMenuDrawer extends StatelessWidget {
+class CustomMenuDrawer extends StatefulWidget {
   final String profile_pic;
   final String userName;
 
   const CustomMenuDrawer({super.key, required this.profile_pic, required this.userName});
+
+  @override
+  State<CustomMenuDrawer> createState() => _CustomMenuDrawerState();
+}
+
+class _CustomMenuDrawerState extends State<CustomMenuDrawer> {
+
+  File? profile_pic;
+  Future<void> pickImage() async {
+    setState(() {
+    });
+
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+    );
+
+    if (result != null) {
+      File file = File(result.files.single.path!);
+      setState(() {
+        profile_pic = file;
+      });
+    } else {
+      setState(() {
+      });
+    }
+  }
 
   void logout() async
   {
@@ -24,6 +53,8 @@ class CustomMenuDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+
     return Drawer(
       backgroundColor: Colors.grey[300],
       child: Column(
@@ -35,15 +66,30 @@ class CustomMenuDrawer extends StatelessWidget {
 
                   child: Column(
                 children: [
-                  Container(
+                  profile_pic == null ?
+                  InkWell(
+                    onTap: pickImage,
+                    child: Container(
+                      height: 100,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                          color: Colors.lime,
+                          image:  DecorationImage(
+                              image: NetworkImage(widget.profile_pic),
+                            fit: BoxFit.cover
+                          )),
+
+                    ),
+                  ) : Container(
                     height: 100,
                     width: 100,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
+                        borderRadius: BorderRadius.circular(50),
                         color: Colors.lime,
                         image:  DecorationImage(
-                            image: NetworkImage(profile_pic),
-                          fit: BoxFit.cover
+                            image: FileImage(profile_pic!),
+                            fit: BoxFit.cover
                         )),
 
                   ),
@@ -51,7 +97,7 @@ class CustomMenuDrawer extends StatelessWidget {
                     height: 8,
                   ),
                    Text(
-                    userName,
+                    widget.userName,
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                   )
                 ],

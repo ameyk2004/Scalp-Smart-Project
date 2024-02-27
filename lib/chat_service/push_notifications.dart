@@ -21,9 +21,6 @@ class PushNotifications{
       await FirebaseMessaging.instance.getAPNSToken();
       print("Device Token : $deviceToken");
 
-
-
-
   }
 
 

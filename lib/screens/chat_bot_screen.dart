@@ -27,6 +27,7 @@ class _ChatBotPageState extends State<ChatBotPage> {
   bool _isLoading = false;
 
 
+
   Future<void> fetchChatHistory() async {
     DocumentSnapshot<Map<String, dynamic>> snapshot =
     await FirebaseFirestore.instance
@@ -107,7 +108,9 @@ class _ChatBotPageState extends State<ChatBotPage> {
 
       print(chat_history);
 
-      setState(() {_isLoading = false;});
+      setState(() {_isLoading = false;
+        textEditingController.clear();
+      });
     } else {
       print(response.statusCode);
 
