@@ -48,7 +48,7 @@ class _ImageThreadScreenState extends State<ImageThreadScreen> {
       itemCount: imageThread.length,
         itemBuilder: (context, index){
 
-      return ImageThreadObject(bs64Image: imageThread[index]['image'], stage:  imageThread[index]['stage'], date: imageThread[index]['date'] ,);
+      return ImageThreadObject(imageUrl: imageThread[index]['image'], stage:  imageThread[index]['stage'], date: imageThread[index]['date'] ,);
 
     }, separatorBuilder: (BuildContext context, int index) {
         return SizedBox(height: 40);
@@ -69,17 +69,17 @@ class _ImageThreadScreenState extends State<ImageThreadScreen> {
 }
 
 class ImageThreadObject extends StatelessWidget {
-  final String bs64Image;
+  final String imageUrl;
   final String stage;
   final String date;
   const ImageThreadObject({
-    super.key, required this.bs64Image, required this.stage, required this.date,
+    super.key, required this.imageUrl, required this.stage, required this.date,
   });
 
   @override
   Widget build(BuildContext context) {
     
-    final threadImage = Image.memory(base64Decode(bs64Image));
+    final threadImage = Image.network(imageUrl);
     
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 35),

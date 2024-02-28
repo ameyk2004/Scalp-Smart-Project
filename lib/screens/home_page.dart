@@ -5,10 +5,10 @@ import 'package:scalp_smart/colors.dart';
 import 'package:scalp_smart/details/caraouselVideoLinks.dart';
 import 'package:scalp_smart/details/stage_info_details.dart';
 import 'package:scalp_smart/screens/chat_bot_screen.dart';
+import 'package:scalp_smart/screens/google_map_screen.dart';
 import 'package:scalp_smart/screens/login_page.dart';
 import 'package:scalp_smart/screens/shop_page.dart';
 import 'package:scalp_smart/screens/self_assesment_page.dart';
-import 'package:scalp_smart/widgets/loadingScreen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../details/userInfo.dart';
@@ -101,6 +101,17 @@ class _HomePageState extends State<HomePage> {
                 color: appBarColor,
                 size: 35,
               )),
+
+          IconButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>GoogleMapScreen()));
+              },
+              icon: const Icon(
+                Icons.map_outlined,
+                color: appBarColor,
+                size: 35,
+              )),
+
           IconButton(
               onPressed: () {
                 showSearch(context: context, delegate: CustomSearchDelegate());

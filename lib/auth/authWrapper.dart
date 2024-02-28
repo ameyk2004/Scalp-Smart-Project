@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import '../admin_screens/admin_home_page.dart';
 import '../doctor_screens/doc_home_screen.dart';
 import '../firebase_service/database.dart';

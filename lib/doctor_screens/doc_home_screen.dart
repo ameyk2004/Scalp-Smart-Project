@@ -180,14 +180,12 @@ class _DoctorPageBodyState extends State<DoctorPageBody> {
 
                 if(documentSnapshot["image"] !="")
                   {
-                    annotatedImage = Image.memory(base64Decode(documentSnapshot["image"]));
+                    annotatedImage = Image.network(documentSnapshot["image"]);
                   }
                 else
                   {
                     annotatedImage = null;
                   }
-
-
 
                 if(assigned_patients.contains(documentSnapshot["uid"])) {
                   return InkWell(

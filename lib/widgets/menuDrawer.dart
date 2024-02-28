@@ -1,8 +1,11 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:scalp_smart/colors.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import '../auth/authServices.dart';
 
@@ -19,6 +22,30 @@ class CustomMenuDrawer extends StatefulWidget {
 class _CustomMenuDrawerState extends State<CustomMenuDrawer> {
 
   File? profile_pic;
+  String image_url = "";
+  bool Isloading = false;
+
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
+
+  getProfilePic() async
+  {
+    Isloading = true;
+    final docSnapshot = await firestore.collection("Users").doc(auth.currentUser!.uid).get();
+
+    if(docSnapshot.exists)
+      {
+        image_url = docSnapshot.data()?["profile_pic"]?? widget.profile_pic;
+      }
+    Isloading = false;
+
+    setState(() {
+
+    });
+
+  }
+
   Future<void> pickImage() async {
     setState(() {
     });
@@ -28,7 +55,36 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer> {
     );
 
     if (result != null) {
+
       File file = File(result.files.single.path!);
+      print(result.files.single.path!);
+
+      String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
+
+      Reference referenceRoot = FirebaseStorage.instance.ref();
+      Reference refDirImages = referenceRoot.child("images");
+      Reference RefimageToUpload = refDirImages.child(uniqueFileName);
+
+      try {
+
+        await RefimageToUpload.putFile(file);
+
+        image_url = await RefimageToUpload.getDownloadURL();
+        await firestore.collection("Users").doc(auth.currentUser!.uid).update(
+          {
+            "profile_pic" : image_url,
+          }
+        );
+
+        // showDialog(context: context, builder: (context)=>AlertDialog(
+        //   content: Text("Photo Updated"),
+        // ));
+
+      } on Exception catch (e) {
+
+      }
+
+
       setState(() {
         profile_pic = file;
       });
@@ -52,8 +108,13 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    getProfilePic();
+    super.initState();
+  }
 
+  @override
+  Widget build(BuildContext context) {
 
     return Drawer(
       backgroundColor: Colors.grey[300],
@@ -66,7 +127,7 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer> {
 
                   child: Column(
                 children: [
-                  profile_pic == null ?
+                  image_url == "" ?
                   InkWell(
                     onTap: pickImage,
                     child: Container(
@@ -74,24 +135,27 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer> {
                       width: 100,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
-                          color: Colors.lime,
+                          color: appBarColor,
                           image:  DecorationImage(
                               image: NetworkImage(widget.profile_pic),
                             fit: BoxFit.cover
                           )),
 
                     ),
-                  ) : Container(
-                    height: 100,
-                    width: 100,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        color: Colors.lime,
-                        image:  DecorationImage(
-                            image: FileImage(profile_pic!),
-                            fit: BoxFit.cover
-                        )),
+                  ) : InkWell(
+                    onTap: pickImage,
+                    child: Container(
+                      height: 100,
+                      width: 100,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          color: appBarColor,
+                          image:  DecorationImage(
+                              image: NetworkImage(image_url),
+                              fit: BoxFit.cover
+                          )),
 
+                    ),
                   ),
                   SizedBox(
                     height: 8,
@@ -114,7 +178,6 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer> {
               ),
               title: Text("L O G O U T",
                   style: TextStyle(fontWeight: FontWeight.bold)),
-
             ),
           )
         ],
