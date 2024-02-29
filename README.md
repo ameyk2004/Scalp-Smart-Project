@@ -37,6 +37,53 @@ Scalp Smart is a platform designed to predict baldness stages using AI and compu
     flutter run
     ```
 
+## File Structure
+# lib
+
+## auth
+
+### authServices.dart
+
+- This file contains services related to authentication, handling user authentication logic.
+
+### authWrapper.dart
+
+- Wrapper for authentication services, responsible for determining the appropriate screen to show based on the user's authentication status.
+
+## screens
+
+- This directory contains the different screens of your app.
+  - **screen1.dart**: Description of Screen 1.
+  - **screen2.dart**: Description of Screen 2.
+  - ...
+
+## services
+
+- This directory holds various services that your app may need, beyond authentication.
+  - **api_service.dart**: Service for handling communication with your backend or APIs.
+  - **data_service.dart**: Service for managing app data.
+  - ...
+
+## widgets
+
+- The widgets directory contains reusable UI components that can be used across different screens or parts of your app.
+  - **custom_button.dart**: A customizable button widget.
+  - **app_bar.dart**: Custom app bar widget with specific styling.
+  - ...
+
+### colors.dart
+
+- Centralized file for defining color constants used throughout your app.
+
+### firebase_options.dart
+
+- Configuration file for Firebase options, such as API keys, project settings, etc.
+
+## main.dart
+
+- The entry point of your Flutter application, where the app is initialized and run.
+
+
 ## Usage
 
 1. Open the Scalp Smart app or visit the website.
