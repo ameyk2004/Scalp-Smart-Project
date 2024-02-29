@@ -1,12 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:scalp_smart/details/hairCareProducts.dart';
 import 'package:scalp_smart/screens/product_details_page.dart';
 import 'package:scalp_smart/screens/self_assesment_page.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import '../colors.dart';
 import 'package:http/http.dart' as http;
+
+import '../services/details/hairCareProducts.dart';
 
 class ShopPage extends StatefulWidget {
   const ShopPage({super.key});

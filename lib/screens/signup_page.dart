@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:scalp_smart/auth/authServices.dart';
 import 'package:scalp_smart/colors.dart';
-import 'package:scalp_smart/doctor_screens/register_doctor_screen.dart';
 
 
 import '../auth/authWrapper.dart';
 import '../widgets/customTextField.dart';
 import '../widgets/widget_support.dart';
+import 'doctor_screens/register_doctor_screen.dart';
 import 'login_page.dart';
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});

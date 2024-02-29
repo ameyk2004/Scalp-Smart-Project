@@ -4,11 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scalp_smart/colors.dart';
 import 'package:scalp_smart/screens/chat_page.dart';
-import 'package:scalp_smart/firebase_service/database.dart';
 import 'package:scalp_smart/screens/shop_page.dart';
 import 'package:scalp_smart/widgets/widget_support.dart';
 
-import '../details/userInfo.dart';
+import '../services/firebase_service/database.dart';
+
 
 class DoctorDetailsPage extends StatefulWidget {
   const DoctorDetailsPage({super.key});

@@ -11,7 +11,7 @@ import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import '../colors.dart';
-import '../details/stage_info_details.dart';
+import '../services/details/stage_info_details.dart';
 import '../widgets/loadingScreen.dart';
 import 'home_page.dart';
 

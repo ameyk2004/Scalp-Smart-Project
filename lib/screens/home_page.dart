@@ -2,8 +2,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:scalp_smart/auth/authServices.dart';
 import 'package:scalp_smart/colors.dart';
-import 'package:scalp_smart/details/caraouselVideoLinks.dart';
-import 'package:scalp_smart/details/stage_info_details.dart';
 import 'package:scalp_smart/screens/chat_bot_screen.dart';
 import 'package:scalp_smart/screens/login_page.dart';
 import 'package:scalp_smart/screens/shop_page.dart';
@@ -12,6 +10,9 @@ import 'package:scalp_smart/widgets/loadingScreen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../details/userInfo.dart';
+import '../services/details/caraouselVideoLinks.dart';
+import '../services/details/stage_info_details.dart';
+import '../services/details/userInfo.dart';
 import '../widgets/gridStageContainer.dart';
 import '../widgets/menuDrawer.dart';
 import '../widgets/product_home_card.dart';
