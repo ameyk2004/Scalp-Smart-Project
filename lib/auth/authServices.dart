@@ -6,7 +6,6 @@ class AuthService extends ChangeNotifier{
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Stream for listening to authentication state changes
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
   User? getCurrentUser() {

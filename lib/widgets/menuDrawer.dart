@@ -157,26 +157,26 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer> {
 
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 8,
                   ),
                    Text(
                     widget.userName,
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                   )
                 ],
               )),
             ],
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
             child: ListTile(
               onTap: logout,
-              leading: Icon(
+              leading: const Icon(
                 Icons.logout,
                 color: appBarColor,
               ),
-              title: Text("L O G O U T",
+              title: const Text("L O G O U T",
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ),
           )

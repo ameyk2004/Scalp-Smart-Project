@@ -2,19 +2,19 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:scalp_smart/auth/authServices.dart';
 import 'package:scalp_smart/colors.dart';
-import 'package:scalp_smart/details/caraouselVideoLinks.dart';
-import 'package:scalp_smart/details/stage_info_details.dart';
-import 'package:scalp_smart/screens/chat_bot_screen.dart';
-import 'package:scalp_smart/screens/login_page.dart';
-import 'package:scalp_smart/screens/shop_page.dart';
-import 'package:scalp_smart/screens/self_assesment_page.dart';
-import 'package:scalp_smart/widgets/loadingScreen.dart';
+import 'package:scalp_smart/screens/patient_screens/chat_bot_screen.dart';
+import 'package:scalp_smart/screens/patient_screens/google_map_screen.dart';
+import 'package:scalp_smart/screens/patient_screens/login_page.dart';
+import 'package:scalp_smart/screens/patient_screens/shop_page.dart';
+import 'package:scalp_smart/screens/patient_screens/self_assesment_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../details/userInfo.dart';
-import '../widgets/gridStageContainer.dart';
-import '../widgets/menuDrawer.dart';
-import '../widgets/product_home_card.dart';
+import '../../services/details/caraouselVideoLinks.dart';
+import '../../services/details/stage_info_details.dart';
+import '../../services/details/userInfo.dart';
+import '../../widgets/gridStageContainer.dart';
+import '../../widgets/menuDrawer.dart';
+import '../../widgets/product_home_card.dart';
 import 'doctorDetails.dart';
 
 class HomePage extends StatefulWidget {
@@ -101,6 +101,17 @@ class _HomePageState extends State<HomePage> {
                 color: appBarColor,
                 size: 35,
               )),
+
+          IconButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>GoogleMapScreen()));
+              },
+              icon: const Icon(
+                Icons.map_outlined,
+                color: appBarColor,
+                size: 35,
+              )),
+
           IconButton(
               onPressed: () {
                 showSearch(context: context, delegate: CustomSearchDelegate());

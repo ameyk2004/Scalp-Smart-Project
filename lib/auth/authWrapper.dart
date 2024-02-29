@@ -1,12 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../admin_screens/admin_home_page.dart';
-import '../doctor_screens/doc_home_screen.dart';
-import '../firebase_service/database.dart';
-import '../screens/home_page.dart';
+import '../screens/admin_screens/admin_home_page.dart';
+import '../screens/doctor_screens/doc_home_screen.dart';
+import '../screens/patient_screens/home_page.dart';
 import '../screens/onboard.dart';
+import '../services/firebase_service/database.dart';
 
 class AuthWrapper extends StatefulWidget {
+  const AuthWrapper({super.key});
+
   @override
   State<AuthWrapper> createState() => _AuthWrapperState();
 }
@@ -33,7 +35,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
 
               if (roleSnapshot.connectionState == ConnectionState.waiting)
               {
-                return Scaffold(
+                return const Scaffold(
                   backgroundColor: Colors.white,
                   body: Center(child: CircularProgressIndicator()),
                 );
@@ -48,13 +50,13 @@ class _AuthWrapperState extends State<AuthWrapper> {
               else {
 
                 if (roleSnapshot.data == "Patient") {
-                  return HomePage(); // User is a patient
+                  return const HomePage(); // User is a patient
                 } else if(roleSnapshot.data == "Doctor"){
-                  return DoctorHomePage();
+                  return const DoctorHomePage();
                 }
                 else
                   {
-                    return AdminPage();
+                    return const AdminPage();
                   }
               }
             },
@@ -63,7 +65,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
         }
 
         else {
-          return Onboard();
+          return const Onboard();
         }
       },
     );

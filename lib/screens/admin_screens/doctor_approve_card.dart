@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../auth/authServices.dart';
-import '../widgets/widget_support.dart';
+import '../../auth/authServices.dart';
+import '../../widgets/widget_support.dart';
 
 class DoctorCard extends StatelessWidget {
   String email;
@@ -76,12 +76,12 @@ class DoctorCard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(30),
                           ),
                         )),
-                    SizedBox(
+                    const SizedBox(
                       width: 30,
                     ),
                     Expanded(
                       child: Container(
-                        padding: EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(8),
                         child: SingleChildScrollView(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,8 +100,8 @@ class DoctorCard extends StatelessWidget {
                                 maxLines: 1,
                               ),
                               Text("Exp : $experience",
-                                  style: TextStyle(fontSize: 17)),
-                              Text(location, style: TextStyle(fontSize: 17)),
+                                  style: const TextStyle(fontSize: 17)),
+                              Text(location, style: const TextStyle(fontSize: 17)),
                             ],
                           ),
                         ),
@@ -109,10 +109,10 @@ class DoctorCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 5,
                 ),
-                Container(
+                SizedBox(
                   height: 70,
                   child: Row(
                     children: [
@@ -122,7 +122,7 @@ class DoctorCard extends StatelessWidget {
                             HapticFeedback.mediumImpact();
                           },
                           child: Container(
-                            margin: EdgeInsets.only(left: 20),
+                            margin: const EdgeInsets.only(left: 20),
                             height: 40,
                             width: MediaQuery.of(context).size.width / 2 - 50,
 
@@ -141,7 +141,7 @@ class DoctorCard extends StatelessWidget {
                                 location, experience);
                           },
                           child: Container(
-                            margin: EdgeInsets.only(left: 20),
+                            margin: const EdgeInsets.only(left: 20),
                             height: 40,
                             width: MediaQuery.of(context).size.width / 2 - 50,
                             decoration: BoxDecoration(

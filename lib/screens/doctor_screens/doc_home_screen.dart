@@ -1,18 +1,14 @@
-import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/widgets.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:scalp_smart/auth/authServices.dart';
 import 'package:scalp_smart/widgets/widget_support.dart';
-import '../colors.dart';
-import '../firebase_service/database.dart';
-import '../widgets/menuDrawer.dart';
-import '../screens/chat_page.dart';
+import '../../colors.dart';
+import '../../services/firebase_service/database.dart';
+import '../../widgets/menuDrawer.dart';
+import '../chat_page.dart';
 
 class DoctorHomePage extends StatefulWidget {
   const DoctorHomePage({super.key});
@@ -23,8 +19,6 @@ class DoctorHomePage extends StatefulWidget {
 
 class _DoctorHomePageState extends State<DoctorHomePage> {
 
-  final AuthService _auth = AuthService();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   String profile_pic = "https://media.istockphoto.com/id/177373093/photo/indian-male-doctor.jpg?s=612x612&w=0&k=20&c=5FkfKdCYERkAg65cQtdqeO_D0JMv6vrEdPw3mX1Lkfg=";
 
   final AuthService authService = AuthService();
@@ -38,7 +32,8 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
   }
 
   final List<Widget> pages = [
-    DoctorPageBody(),
+    const DoctorPageBody(),
+    const Scaffold(),
   ];
 
   @override
@@ -64,7 +59,7 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
 
                 width: 5,
 
-                margin: EdgeInsets.only(left: 30),
+                margin: const EdgeInsets.only(left: 30),
 
                 decoration: BoxDecoration(
                   image: DecorationImage(image: NetworkImage(profile_pic), fit: BoxFit.cover),
@@ -83,8 +78,6 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
               .width * 0.055),
         ),
         centerTitle: false,
-        actions: [
-        ],
       ),
 
       drawer: CustomMenuDrawer(profile_pic: profile_pic, userName: authService.getCurrentUser()!.email!,),
@@ -132,7 +125,7 @@ class _DoctorPageBodyState extends State<DoctorPageBody> {
 
   Future<void> _refresh() async {
     await getAssignedPatients();
-    return await Future.delayed(Duration(seconds: 2));
+    return await Future.delayed(const Duration(seconds: 2));
   }
 
   getOnLooad() async{
@@ -254,12 +247,12 @@ class _DoctorPageBodyState extends State<DoctorPageBody> {
                                 ),
                               ),
 
-                              SizedBox(width: 20,),
+                              const SizedBox(width: 20,),
 
                               Expanded(
                                 child: Container(
 
-                                  padding: EdgeInsets.all(8),
+                                  padding: const EdgeInsets.all(8),
                                   child: SingleChildScrollView(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment
@@ -270,12 +263,12 @@ class _DoctorPageBodyState extends State<DoctorPageBody> {
                                         Text(documentSnapshot["name"],
                                           style: AppWidget.boldTextStyle(),),
                                         Text(documentSnapshot["email"],
-                                          style: TextStyle(fontSize: 17),
+                                          style: const TextStyle(fontSize: 17),
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,),
-                                        Text("Age : 20",
+                                        const Text("Age : 20",
                                             style: TextStyle(fontSize: 17)),
-                                        Text("Stage -  normal",
+                                        const Text("Stage -  normal",
                                             style: TextStyle(fontSize: 17)),
                                       ],
 
@@ -295,7 +288,7 @@ class _DoctorPageBodyState extends State<DoctorPageBody> {
                               child: Container(
                                 alignment: Alignment.topRight,
 
-                                margin: EdgeInsets.only(right: 10, top: 18),
+                                margin: const EdgeInsets.only(right: 10, top: 18),
 
                                 height: 15,
                                 width: 15,
@@ -314,11 +307,11 @@ class _DoctorPageBodyState extends State<DoctorPageBody> {
                 }
                 else
                   {
-                    return SizedBox.shrink();
+                    return const SizedBox.shrink();
                   }
 
                   }, separatorBuilder: (BuildContext context, int index) {
-              return SizedBox(height: 10,);
+              return const SizedBox(height: 10,);
             },),
           ),
         );
@@ -339,7 +332,7 @@ class _DoctorPageBodyState extends State<DoctorPageBody> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
         child: allUserDetails());
   }
 

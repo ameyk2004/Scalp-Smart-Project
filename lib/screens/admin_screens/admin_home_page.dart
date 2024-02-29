@@ -1,17 +1,9 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scalp_smart/auth/authServices.dart';
-import 'package:scalp_smart/auth/authWrapper.dart';
-import 'package:scalp_smart/colors.dart';
-import 'package:scalp_smart/firebase_service/database.dart';
-import 'package:scalp_smart/widgets/loadingScreen.dart';
-import 'package:scalp_smart/widgets/widget_support.dart';
-
-import '../widgets/menuDrawer.dart';
+import 'package:scalp_smart/services/firebase_service/database.dart';
+import 'package:scalp_smart/widgets/menuDrawer.dart';
 import 'doctor_approve_card.dart';
 
 class AdminPage extends StatefulWidget {
@@ -47,7 +39,7 @@ class _AdminPageState extends State<AdminPage> {
           List<DocumentSnapshot> documents = snapshot.data!.docs;
 
           return Padding(
-            padding: EdgeInsets.only(top: 10, left: 15, right: 15),
+            padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
             child: ListView.separated(
               itemCount: documents.length,
               itemBuilder: (BuildContext context, int index) {
@@ -62,12 +54,12 @@ class _AdminPageState extends State<AdminPage> {
                 );
               },
               separatorBuilder: (BuildContext context, int index) {
-                return SizedBox(height: 30);
+                return const SizedBox(height: 30);
               },
             ),
           );
         } else {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         }
@@ -89,7 +81,7 @@ class _AdminPageState extends State<AdminPage> {
                 },
                 child: Container(
                   width: 5,
-                  margin: EdgeInsets.only(left: 30),
+                  margin: const EdgeInsets.only(left: 30),
                   decoration: BoxDecoration(
                     image: DecorationImage(
                         image: NetworkImage(profile_pic), fit: BoxFit.cover),
@@ -106,7 +98,6 @@ class _AdminPageState extends State<AdminPage> {
                 fontSize: MediaQuery.sizeOf(context).width * 0.055),
           ),
           centerTitle: false,
-          actions: [],
         ),
         drawer: CustomMenuDrawer(
           profile_pic: profile_pic,

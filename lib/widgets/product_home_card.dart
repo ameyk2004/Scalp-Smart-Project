@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:scalp_smart/screens/product_details_page.dart';
+import 'package:scalp_smart/screens/patient_screens/product_details_page.dart';
 
 import '../colors.dart';
-import '../details/hairCareProducts.dart';
+import '../services/details/hairCareProducts.dart';
 
 class ProductHomeCard extends StatelessWidget {
   final int index;

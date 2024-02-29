@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:scalp_smart/colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../screens/login_page.dart';
-import '../widgets/customTextField.dart';
-import '../widgets/widget_support.dart';
+import '../patient_screens/login_page.dart';
+import '../../widgets/customTextField.dart';
+import '../../widgets/widget_support.dart';
 
 class DoctorRegistrationPage extends StatefulWidget {
 

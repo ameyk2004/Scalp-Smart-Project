@@ -2,18 +2,18 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:scalp_smart/screens/stage_info_page.dart';
+import 'package:scalp_smart/screens/patient_screens/stage_info_page.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
-import '../colors.dart';
-import '../details/stage_info_details.dart';
-import '../widgets/loadingScreen.dart';
-import 'home_page.dart';
+import '../../colors.dart';
+import '../../services/details/stage_info_details.dart';
+import '../../widgets/loadingScreen.dart';
 
 class SelfAssessmentPage extends StatefulWidget {
   const SelfAssessmentPage({Key? key}) : super(key: key);
@@ -42,9 +42,7 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
     });
 
     return await Future.delayed(Duration(seconds: 2));
-
-
-
+    
   }
 
   Future<void> pickImage() async {
@@ -80,9 +78,8 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(
         source: ImageSource.camera,
-        maxWidth: 600, // Set the maximum width to control the image quality
-        imageQuality: 100, // Set the image quality (0 to 100)
-
+        maxWidth: 600,
+        imageQuality: 100,
     );
 
     if (pickedFile != null) {
@@ -95,8 +92,6 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
           List<int> imageBytes = _image!.readAsBytesSync();
           String base64Image = base64Encode(imageBytes);
 
-          // print("Base64 Image: $base64Image");
-
           // await FirebaseFirestore.instance
           //     .collection("Users")
           //     .doc(_auth.currentUser!.uid)
@@ -106,7 +101,6 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
 
         }
       });
-
 
       print("Update successful!");
     }
@@ -119,9 +113,12 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
     });
 
     var url = Uri.parse(
-        'https://pblproject-ljlp.onrender.com/flutter/upload'); // Flask endpoint for image upload
-    var request = http.MultipartRequest('POST', url);
+        'https://pblproject-ljlp.onrender.com/flutter/upload');
 
+    // var url = Uri.parse(
+    //     'http://127.0.0.1:5000/flutter/upload');
+
+    var request = http.MultipartRequest('POST', url);
     // Attach the image file to the request
     request.files.add(await http.MultipartFile.fromPath('image', _image!.path));
     var response = await request.send();
@@ -137,44 +134,62 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
   }
 
   Future getAnnotedImage() async {
+    print("Running command");
     var url = 'https://pblproject-ljlp.onrender.com/flutter/predict';
+    // var url = 'http://127.0.0.1:5000/flutter/predict';
     final response = await http.get(Uri.parse(url));
-
 
     if (response.statusCode == 200) {
 
       final data = jsonDecode(response.body);
       DateTime dateTime = DateTime.now();
 
-      message = data["stage"];
+      // print(response.body);
+
+      message = data["stage"]; // get image base64
       String annotedImageFile = data["file"];
-      // print(annotedImageFile);
-      if (annotedImageFile != null) {
+
+      List<int> imageBytes = base64Decode(annotedImageFile);
+
+      String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
+
+      Reference referenceRoot = FirebaseStorage.instance.ref();
+      Reference refDirImages = referenceRoot.child("results");
+      Reference RefimageToUpload = refDirImages.child(uniqueFileName);
+
+      await RefimageToUpload.putData(Uint8List.fromList(imageBytes));
+
+      String image_url = await RefimageToUpload.getDownloadURL();
+      print(image_url);
+
+      if (annotedImageFile!= null) {
         try {
           await FirebaseFirestore.instance
               .collection("Users")
               .doc(_auth.currentUser!.uid)
               .update({
-            "image": annotedImageFile.toString(),
+            "image": image_url,
           });
 
+          annotatedImage = Image.memory(base64Decode(annotedImageFile));
 
           final userSnapshot = await FirebaseFirestore.instance.collection("Users").doc(_auth.currentUser!.uid).get();
           if(userSnapshot.exists)
           {
+            print("exists");
             try {
               final historyfromfirestore = userSnapshot.data()?["image_history"] ?? [];
               imageHistory = historyfromfirestore;
               imageHistory.add({
-                "image" : annotedImageFile,
-                "date" : "${dateTime.day} ${months[dateTime.month]}"
+                "image" : image_url,
+                "date" : "${dateTime.day} ${months[dateTime.month-1]}",
+                "stage" : data["stage"]
               });
 
               await _firestore.collection("Users").doc(_auth.currentUser!.uid).update(
                 {
                   "image_history" : imageHistory,
                 }
-
               );
               print("image_array updated");
             } on Exception catch (e) {
@@ -189,10 +204,8 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
         print("annotedImageFile is null. Skipping update.");
       }
 
-
-
       setState(() {
-        annotatedImage = Image.memory(base64Decode(annotedImageFile));
+        annotatedImage =Image.memory(base64Decode(annotedImageFile));
         finalStage = data["stage"];
       });
     }
@@ -233,7 +246,6 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
                         showLoadingScreen(context, "Sending Image to Server");
                         // Make the API call
                         await sendImage();
-                        // Remove loading screen after the API call is complete
                         Navigator.of(context).pop();
 
                       },
@@ -276,8 +288,6 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
                   ),
                 ),
 
-
-
                 Visibility(
                   visible: annotatedImage!=null,
                   child: Align(
@@ -305,8 +315,6 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
                                           ),
                         )
 
-
-
                         : const SizedBox.shrink()
                   ),
                 ),
@@ -325,15 +333,10 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
 
                       await sendImage();
                       Navigator.of(context).pop();
-
                       showLoadingScreen(context, "Analysing Scalp");
-
                       await getAnnotedImage();
-                      // Remove loading screen after the API call is complete
                       Navigator.of(context).pop();
-
                       HapticFeedback.vibrate();
-
                     },
 
                       style: ButtonStyle(
@@ -356,7 +359,6 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
 
 
                       Navigator.of(context).push(MaterialPageRoute(builder: (context) => StageInfoPage(stageInfo: stage_info[finalStage!]!["description"]!, stage: finalStage!, imageAddr: stage_info[finalStage!]!["imageAddr"]!)));
-
 
                     },
 

@@ -18,7 +18,7 @@ void showLoadingScreen(BuildContext context, String loadingMessage) {
                   valueColor: AlwaysStoppedAnimation<Color>(buttonColor),
                 ),
                 const SizedBox(height: 16),
-                Text(loadingMessage,style: TextStyle(fontWeight: FontWeight.bold),),
+                Text(loadingMessage,style: const TextStyle(fontWeight: FontWeight.bold),),
               ],
             ));
       });

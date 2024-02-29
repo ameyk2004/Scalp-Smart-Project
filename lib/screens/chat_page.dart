@@ -1,15 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:scalp_smart/chat_service/chat_service.dart';
-import 'package:scalp_smart/colors.dart';
-import 'package:scalp_smart/doctor_screens/image_thread_screen.dart';
+import 'package:scalp_smart/screens/doctor_screens/image_thread_screen.dart';
 import 'package:scalp_smart/widgets/chat_bubble.dart';
 import 'package:intl/intl.dart';
 import 'package:scalp_smart/widgets/widget_support.dart';
 
+import '../services/chat_service/chat_service.dart';
 import '../widgets/customTextField.dart';
 
 class ChatPage extends StatefulWidget {
@@ -44,10 +41,10 @@ class _ChatPageState extends State<ChatPage> {
       appBar: AppBar(
         title: Text(widget.receiver, style: AppWidget.headlineTextStyle(),),
         actions: [
-          Padding(padding: EdgeInsets.only(right: 10),
+          Padding(padding: const EdgeInsets.only(right: 10),
           child: IconButton(onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (context)=>ImageThreadScreen(patientId: widget.recieverId,)));
-          }, icon: Icon(Icons.image_search, size: 35,)))
+          }, icon: const Icon(Icons.image_search, size: 35,)))
         ],
       ),
 
@@ -60,10 +57,10 @@ class _ChatPageState extends State<ChatPage> {
             children: [
               Expanded(
                 child: Container(
-                  margin: EdgeInsets.only(left: 20,bottom: 30),
+                  margin: const EdgeInsets.only(left: 20,bottom: 30),
                   child: CustomTextField(
                     hintText: "Message",
-                    icon: Icon(Icons.message_outlined),
+                    icon: const Icon(Icons.message_outlined),
                     obscureText: false,
                     textEditingController: messageController,
                   ),
@@ -71,8 +68,8 @@ class _ChatPageState extends State<ChatPage> {
               ),
               
               Container(
-                margin: EdgeInsets.only(bottom: 30, left: 20, right: 20),
-                  child: IconButton(icon:Icon(Icons.send, size: 30,), onPressed: sendMessage,
+                margin: const EdgeInsets.only(bottom: 30, left: 20, right: 20),
+                  child: IconButton(icon:const Icon(Icons.send, size: 30,), onPressed: sendMessage,
     ))],
           ),
         ],
@@ -92,7 +89,7 @@ class _ChatPageState extends State<ChatPage> {
             children: documents.map((doc) => _buildMessageListItem(doc)).toList(),
           );
         } else {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         }

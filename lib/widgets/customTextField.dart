@@ -19,7 +19,7 @@ class CustomTextField extends StatelessWidget {
           hintText: hintText,
           hintStyle: AppWidget.boldTextStyle(),
           prefixIcon: icon,
-          border: OutlineInputBorder(borderSide: BorderSide(width: 1), borderRadius: BorderRadius.circular(15))
+          border: OutlineInputBorder(borderSide: const BorderSide(width: 1), borderRadius: BorderRadius.circular(15))
       ),
     );
   }

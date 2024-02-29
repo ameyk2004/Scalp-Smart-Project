@@ -14,15 +14,15 @@ class ChatBubble extends StatelessWidget {
       constraints: BoxConstraints(
         maxWidth: MediaQuery.of(context).size.width/1.5, // Set your desired maximum width
       ),
-      margin: EdgeInsets.symmetric(horizontal: 14, vertical: 5),
-      padding: EdgeInsets.all(9),
+      margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+      padding: const EdgeInsets.all(9),
       decoration: BoxDecoration(
           color: isCurrentUser ?  Colors.green.shade500 : Colors.grey.shade300,
-          borderRadius:  isCurrentUser ? BorderRadius.only(
+          borderRadius:  isCurrentUser ? const BorderRadius.only(
               topLeft: Radius.circular(10),
               topRight: Radius.circular(10),
               bottomLeft: Radius.circular(10)
-          ) : BorderRadius.only(
+          ) : const BorderRadius.only(
               topLeft: Radius.circular(10),
               topRight: Radius.circular(10),
               bottomRight : Radius.circular(10))

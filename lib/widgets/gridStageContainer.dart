@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:scalp_smart/screens/stage_info_page.dart';
+import 'package:scalp_smart/screens/patient_screens/stage_info_page.dart';
 
 import '../colors.dart';
 
@@ -12,11 +12,11 @@ class gridStageContainer extends StatelessWidget {
   final String stageInfo;
 
   const gridStageContainer({
-    Key? key,
+    super.key,
     required this.imagePath,
     required this.stageName,
     required this.stageInfo,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +61,7 @@ class gridStageContainer extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 10,),
+            const SizedBox(height: 10,),
             Container(
               padding: const EdgeInsets.all(8.0),
 

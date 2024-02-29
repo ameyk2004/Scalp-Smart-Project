@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scalp_smart/colors.dart';
-import 'package:scalp_smart/screens/signup_page.dart';
+import 'package:scalp_smart/screens/patient_screens/signup_page.dart';
 import 'package:scalp_smart/widgets/content_model.dart';
 import 'package:scalp_smart/widgets/widget_support.dart';
 
@@ -45,7 +45,7 @@ class _OnboardState extends State<Onboard> {
                 },
                 itemBuilder: (_, i) {
                   return Padding(
-                    padding: EdgeInsets.only(top: 60.0, left: 20.0, right: 20.0),
+                    padding: const EdgeInsets.only(top: 60.0, left: 20.0, right: 20.0),
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
@@ -55,14 +55,14 @@ class _OnboardState extends State<Onboard> {
                             width: MediaQuery.of(context).size.width ,
                             fit: BoxFit.cover,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 40.0,
                           ),
                           Text(
                             contents[i].title,
                             style: AppWidget.headlineTextStyle(),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 20.0,
                           ),
                           Text(
@@ -88,21 +88,21 @@ class _OnboardState extends State<Onboard> {
             onTap: () {
               if (currentIndex == contents.length - 1) {
                 Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => SignUpPage()));
+                    context, MaterialPageRoute(builder: (context) => const SignUpPage()));
               }
               _controller.nextPage(
-                  duration: Duration(milliseconds: 100),
+                  duration: const Duration(milliseconds: 100),
                   curve: Curves.bounceIn);
             },
             child: Container(
               decoration: BoxDecoration(color: appBarColor, borderRadius: BorderRadius.circular(20)),
               height: 60,
-              margin: EdgeInsets.all(40),
+              margin: const EdgeInsets.all(40),
               width: double.infinity,
               child: Center(
                 child: Text(
                   currentIndex == contents.length - 1?"Start": "Next",
-                  style: TextStyle(color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.bold),
+                  style: const TextStyle(color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -116,7 +116,7 @@ class _OnboardState extends State<Onboard> {
     return Container(
       height: 10.0,
       width: currentIndex == index ? 18 : 7,
-      margin: EdgeInsets.only(right: 5),
+      margin: const EdgeInsets.only(right: 5),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(6), color: Colors.black38),
     );

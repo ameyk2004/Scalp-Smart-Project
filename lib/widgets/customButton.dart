@@ -20,7 +20,7 @@ class CustomButton extends StatelessWidget {
         child: SizedBox(
           width: double.infinity,
           height: 50,
-          child: Align(alignment: Alignment.center, child: Text(text, style: TextStyle(color: Colors.white),)),
+          child: Align(alignment: Alignment.center, child: Text(text, style: const TextStyle(color: Colors.white),)),
         ),
       ),
     );
