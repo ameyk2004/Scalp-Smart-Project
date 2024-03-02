@@ -104,16 +104,6 @@ class _HomePageState extends State<HomePage> {
 
           IconButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>GoogleMapScreen()));
-              },
-              icon: const Icon(
-                Icons.map_outlined,
-                color: appBarColor,
-                size: 35,
-              )),
-
-          IconButton(
-              onPressed: () {
                 showSearch(context: context, delegate: CustomSearchDelegate());
               },
               icon: const Icon(

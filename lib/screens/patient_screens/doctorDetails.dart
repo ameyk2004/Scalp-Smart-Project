@@ -8,6 +8,7 @@ import 'package:scalp_smart/screens/patient_screens/shop_page.dart';
 import 'package:scalp_smart/widgets/widget_support.dart';
 
 import '../../services/firebase_service/database.dart';
+import 'google_map_screen.dart';
 
 class DoctorDetailsPage extends StatefulWidget {
   const DoctorDetailsPage({super.key});
@@ -51,11 +52,15 @@ class _DoctorDetailsPageState extends State<DoctorDetailsPage> {
             if (docSnapshot.exists) {
               List<dynamic> historyFromFirestore = docSnapshot.data()?['assigned_patients'] ?? [];
 
-              patient_list = historyFromFirestore;
-              patient_list.add(_auth.currentUser!.uid);
+              if (!historyFromFirestore.contains(_auth.currentUser!.uid)) {
+                patient_list = historyFromFirestore;
+                patient_list.add(_auth.currentUser!.uid);
 
-              await  _firestore.collection("Users").doc(documentSnapshot.id).update(
-                  {'assigned_patients' : patient_list});
+                await _firestore.collection("Users")
+                    .doc(documentSnapshot.id)
+                    .update(
+                    {'assigned_patients': patient_list});
+              }
             }
 
           },
@@ -116,6 +121,15 @@ class _DoctorDetailsPageState extends State<DoctorDetailsPage> {
         ),
         centerTitle: false,
         actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>GoogleMapScreen()));
+              },
+              icon: const Icon(
+                Icons.location_on_outlined,
+                color: appBarColor,
+                size: 35,
+              )),
           IconButton(
               onPressed: () {
 

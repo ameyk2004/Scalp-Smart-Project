@@ -1,7 +1,12 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:scalp_smart/colors.dart';
+
+import '../../widgets/widget_support.dart';
 
 class GoogleMapScreen extends StatefulWidget {
   const GoogleMapScreen({super.key});
@@ -38,30 +43,103 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Google Map"),
-      ),
-      body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 20),
-        width: MediaQuery.of(context).size.width,
-        height: 500,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(50),
-          border: Border.all(width: 3)
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height/2,
+              child: Stack(
+        
+                children: [
+                  GoogleMap(
+                    initialCameraPosition: _pictLocation,
+                    compassEnabled: true,
+                    markers: Set<Marker>.of(_markers),
+                    mapType: MapType.terrain,
+                    onMapCreated: (GoogleMapController controller){
+                      _controller.complete(controller);
+                    },
+                  ),
+                  SafeArea(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 30.0),
+                      child: Row(
+                        children: [
+                          InkWell(onTap : () {Navigator.of(context).pop();}, child: Icon(Icons.arrow_back_ios)),
+                          Expanded(
+                            child: TextField(
+                              style : AppWidget.boldTextStyle(),
+                            
+                              decoration: InputDecoration(
+                                filled: true,
+                                constraints: BoxConstraints(maxHeight: 50 ,maxWidth: double.infinity),
+                                hintStyle: TextStyle(fontWeight: FontWeight.normal),
+                                prefixIcon: Icon(Icons.search),
+                                enabledBorder: OutlineInputBorder(borderSide: BorderSide(width: 1, color: appBarColor), borderRadius: BorderRadius.circular(15)),
+                                focusedBorder: OutlineInputBorder(borderSide: BorderSide(width: 2, color: appBarColor),borderRadius: BorderRadius.circular(15)),
+                                hintText: "Search",
+                                fillColor: Colors.white
+                              ),
+                            
+                              ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        
+        
+            Container(
+              height: 50,
+              width: MediaQuery.of(context).size.width,
+              color: appBarColor,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                    child: Text("Nearby Dermatologists", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),)),
+              ),
+            ),
+        
+            Container(
+              height: MediaQuery.of(context).size.height/2-50,
+              child: ListView(
+              children: [
+                NearbyDoctor(),
+                SizedBox(height: 10,),
+                NearbyDoctor(),
+                SizedBox(height: 10,),
+                NearbyDoctor(),
+                SizedBox(height: 10,),
+                NearbyDoctor(),
+                SizedBox(height: 10,),
+                NearbyDoctor(),
+              ],
+              ),
+            ),
+        
+          ],
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(50),
-          child: GoogleMap(
-            initialCameraPosition: _pictLocation,
-            compassEnabled: true,
-            markers: Set<Marker>.of(_markers),
-            mapType: MapType.terrain,
-            onMapCreated: (GoogleMapController controller){
-              _controller.complete(controller);
-            },
-          ),
-        ),
       ),
+    );
+  }
+}
+
+class NearbyDoctor extends StatelessWidget {
+  const NearbyDoctor({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 10),
+      width: MediaQuery.of(context).size.width,
+      height: 90,
+      color: Colors.grey.shade200,
     );
   }
 }

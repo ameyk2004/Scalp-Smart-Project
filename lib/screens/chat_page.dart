@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:scalp_smart/screens/doctor_screens/image_thread_screen.dart';
+import 'package:scalp_smart/screens/doctor_screens/image_thread_sql.dart';
 import 'package:scalp_smart/widgets/chat_bubble.dart';
 import 'package:intl/intl.dart';
 import 'package:scalp_smart/widgets/widget_support.dart';
@@ -43,7 +44,7 @@ class _ChatPageState extends State<ChatPage> {
         actions: [
           Padding(padding: const EdgeInsets.only(right: 10),
           child: IconButton(onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context)=>ImageThreadScreen(patientId: widget.recieverId,)));
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>ImageThreadSQL(uid: widget.recieverId)));
           }, icon: const Icon(Icons.image_search, size: 35,)))
         ],
       ),
@@ -80,12 +81,22 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _buildMessageList() {
     String senderId = auth.currentUser!.uid;
+    ScrollController _scrollController = ScrollController();
+
+
     return StreamBuilder<QuerySnapshot>(
       stream: chatService.getMessages(widget.recieverId, senderId),
       builder: (context, snapshot) {
         if (snapshot.hasData && snapshot.data != null) {
           List<DocumentSnapshot> documents = snapshot.data!.docs;
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+          });
+
+
           return ListView(
+            controller: _scrollController,
             children: documents.map((doc) => _buildMessageListItem(doc)).toList(),
           );
         } else {

@@ -259,6 +259,7 @@ class _DoctorRegistrationPageState extends State<DoctorRegistrationPage> {
 
 
 
+
                   ],
                 ),
               ),

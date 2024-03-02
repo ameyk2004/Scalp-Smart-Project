@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -141,9 +143,7 @@ class _DoctorPageBodyState extends State<DoctorPageBody> {
     final docSnapshot = await _firestore.collection("Users").doc(_auth.currentUser!.uid).get();
     if (docSnapshot.exists) {
       assigned_patients = docSnapshot.data()?["assigned_patients"] ?? [];
-
     }
-
     setState(() {
     });
   }
@@ -173,7 +173,7 @@ class _DoctorPageBodyState extends State<DoctorPageBody> {
 
                 if(documentSnapshot["image"] !="")
                   {
-                    annotatedImage = Image.network(documentSnapshot["image"]);
+                    annotatedImage = Image.memory(base64Decode(documentSnapshot["image"]));
                   }
                 else
                   {

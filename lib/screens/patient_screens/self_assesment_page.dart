@@ -3,7 +3,10 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:scalp_smart/screens/patient_screens/HairlossStageResult.dart';
 import 'package:scalp_smart/screens/patient_screens/stage_info_page.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
@@ -11,6 +14,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
+import 'package:scalp_smart/widgets/widget_support.dart';
 import '../../colors.dart';
 import '../../services/details/stage_info_details.dart';
 import '../../widgets/loadingScreen.dart';
@@ -27,14 +31,11 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
   String message = 'Upload Your Image Below';
   Image? annotatedImage;
   String? finalStage;
-  List imageHistory = [];
-  final List months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<void> _refresh() async{
-
+  Future<void> _refresh() async {
     annotatedImage = null;
     _image = null;
     setState(() {
@@ -42,12 +43,10 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
     });
 
     return await Future.delayed(Duration(seconds: 2));
-    
   }
 
   Future<void> pickImage() async {
-    setState(() {
-    });
+    setState(() {});
 
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.image,
@@ -55,31 +54,22 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
 
     if (result != null) {
       File file = File(result.files.single.path!);
-      // String base64String = base64Encode(file.readAsBytesSync());
-      // await FirebaseFirestore.instance
-      //     .collection("Users")
-      //     .doc(_auth.currentUser!.uid)
-      //     .update({
-      //   "image": base64String,
-      // });
       setState(() {
         _image = file;
         message = 'Image picked successfully!';
         annotatedImage = null;
-
       });
     } else {
-      setState(() {
-      });
+      setState(() {});
     }
   }
 
   Future<void> captureImage() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(
-        source: ImageSource.camera,
-        maxWidth: 600,
-        imageQuality: 100,
+      source: ImageSource.camera,
+      maxWidth: 600,
+      imageQuality: 100,
     );
 
     if (pickedFile != null) {
@@ -91,14 +81,6 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
         if (_image != null) {
           List<int> imageBytes = _image!.readAsBytesSync();
           String base64Image = base64Encode(imageBytes);
-
-          // await FirebaseFirestore.instance
-          //     .collection("Users")
-          //     .doc(_auth.currentUser!.uid)
-          //     .update({
-          //   "image": base64Image,
-          // });
-
         }
       });
 
@@ -115,11 +97,7 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
     var url = Uri.parse(
         'https://pblproject-ljlp.onrender.com/flutter/upload');
 
-    // var url = Uri.parse(
-    //     'http://127.0.0.1:5000/flutter/upload');
-
     var request = http.MultipartRequest('POST', url);
-    // Attach the image file to the request
     request.files.add(await http.MultipartFile.fromPath('image', _image!.path));
     var response = await request.send();
 
@@ -135,261 +113,211 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
 
   Future getAnnotedImage() async {
     print("Running command");
-    var url = 'https://pblproject-ljlp.onrender.com/flutter/predict';
-    // var url = 'http://127.0.0.1:5000/flutter/predict';
+    var url = 'https://pblproject-ljlp.onrender.com/flutter/predict?user_id=${_auth
+        .currentUser!.uid}';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
-
       final data = jsonDecode(response.body);
-      DateTime dateTime = DateTime.now();
 
-      // print(response.body);
 
       message = data["stage"]; // get image base64
       String annotedImageFile = data["file"];
 
-      List<int> imageBytes = base64Decode(annotedImageFile);
-
-      String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
-
-      Reference referenceRoot = FirebaseStorage.instance.ref();
-      Reference refDirImages = referenceRoot.child("results");
-      Reference RefimageToUpload = refDirImages.child(uniqueFileName);
-
-      await RefimageToUpload.putData(Uint8List.fromList(imageBytes));
-
-      String image_url = await RefimageToUpload.getDownloadURL();
-      print(image_url);
-
-      if (annotedImageFile!= null) {
+      if (annotedImageFile != null) {
         try {
           await FirebaseFirestore.instance
               .collection("Users")
               .doc(_auth.currentUser!.uid)
               .update({
-            "image": image_url,
+            "image": annotedImageFile,
           });
-
-          annotatedImage = Image.memory(base64Decode(annotedImageFile));
-
-          final userSnapshot = await FirebaseFirestore.instance.collection("Users").doc(_auth.currentUser!.uid).get();
-          if(userSnapshot.exists)
-          {
-            print("exists");
-            try {
-              final historyfromfirestore = userSnapshot.data()?["image_history"] ?? [];
-              imageHistory = historyfromfirestore;
-              imageHistory.add({
-                "image" : image_url,
-                "date" : "${dateTime.day} ${months[dateTime.month-1]}",
-                "stage" : data["stage"]
-              });
-
-              await _firestore.collection("Users").doc(_auth.currentUser!.uid).update(
-                {
-                  "image_history" : imageHistory,
-                }
-              );
-              print("image_array updated");
-            } on Exception catch (e) {
-              print("Error");
-            }
-          }
-          print("Update successful!");
-        } catch (e) {
-          print("Error updating document: $e");
         }
-      } else {
-        print("annotedImageFile is null. Skipping update.");
-      }
+        on Exception catch (e) {
+          print(e.toString());
+        }
 
-      setState(() {
-        annotatedImage =Image.memory(base64Decode(annotedImageFile));
-        finalStage = data["stage"];
-      });
+        annotatedImage = Image.memory(base64Decode(annotedImageFile));
+
+        setState(() {
+          annotatedImage = Image.memory(base64Decode(annotedImageFile));
+          finalStage = data["stage"];
+        });
+      }
     }
+  }
+
+  generateResults() async
+  {
+      if(annotatedImage!=null)
+        {
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>ImageResulPage(annotatedImage: annotatedImage!, stage: finalStage!,)));
+        }
+      else
+        {
+          showDialog(context: context, builder: (context)=>AlertDialog(
+            title : Text("Image not Predicted"),
+            backgroundColor: dialogboxColor,
+            actions: [
+              InkWell(
+                onTap: _refresh,
+                  child: Container(child: Text("Try Again ?"),)
+              ),
+            ],
+          ));
+        }
   }
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
 
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        child: LiquidPullToRefresh(
-          onRefresh: _refresh,
-          height: 250,
-          animSpeedFactor: 1.5,
-          color: appBarColor,
-          child: SingleChildScrollView(
+      body: LiquidPullToRefresh(
+        onRefresh: _refresh,
+        height: 250,
+        animSpeedFactor: 1.5,
+        color: appBarColor,
+        child: SingleChildScrollView(
 
-            child: Column(
-              children: [
-                const SizedBox(height: 10,),
-                Align(
+          child: Column(
+            children: [
+             Container(
+               width: MediaQuery.of(context).size.width,
+               height: MediaQuery.of(context).size.height/4,
+               decoration: BoxDecoration(
+                 image: DecorationImage(image: NetworkImage("https://media.post.rvohealth.io/wp-content/uploads/2021/10/man-hands-on-head-hair-1200-628-facebook-1200x628.jpg"), fit: BoxFit.cover)
+               ),
+             ),
+
+              SizedBox(height: 15,),
+
+              Text("Upload or take a Photo", style: AppWidget.headlineTextStyle(),),
+              SizedBox(height: 10,),
+              Container(
+                  margin: EdgeInsets.symmetric(horizontal: 30),
+
+                  child: Text("Your face must be clearly visible in the Photo. It will not be shared with anyone", textAlign: TextAlign.center, style: TextStyle(fontSize: 15))),
+              SizedBox(height: 15,),
+
+              Visibility(
+                visible: annotatedImage == null,
+                child: Align(
                   alignment: Alignment.center,
-                  child:
-
-                      message != null ? Text(message, style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold)) :
-
-                  const Text("Upload your Image Below", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)
-                ),
-                const SizedBox(height: 10,),
-                Visibility(
-                  visible: annotatedImage == null,
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: InkWell(
-                      onDoubleTap: () async {
-                        showLoadingScreen(context, "Sending Image to Server");
-                        // Make the API call
-                        await sendImage();
-                        Navigator.of(context).pop();
-
-                      },
-                      onTap: () async {
-                        showLoadingScreen(context, "Getting Image Picker");
-                        // Make the API call
-                        await pickImage();
-                        // Remove loading screen after the API call is complete
-                        Navigator.of(context).pop();
-
-                      },
-                      child: _image != null
-                          ? Container(
-                        height: 360,
-                        width: 360,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: FileImage(_image!), // Assuming _image is a File
-                            fit: BoxFit.cover, // Cover the container while maintaining aspect ratio
-                            alignment: Alignment.topCenter, // Align the top of the image within the container
-                          ),
-                          border: Border.all(width: 1),
-                          borderRadius: BorderRadius.circular(30),
+                  child: InkWell(
+                    onTap: () async {
+                      showLoadingScreen(context, "Getting Image Picker");
+                      await pickImage();
+                      Navigator.of(context).pop();
+                    },
+                    child: _image != null
+                        ? Container(
+                      height: 280,
+                      width: 280,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: FileImage(_image!), // Assuming _image is a File
+                          fit: BoxFit.cover, // Cover the container while maintaining aspect ratio
+                          alignment: Alignment.topCenter, // Align the top of the image within the container
                         ),
-                      )
+                        border: Border.all(width: 1),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    )
 
-                        : Container(
-                        height: 360,
-                        width: 360,
-                        decoration: BoxDecoration(
-                          image: const DecorationImage(
-                            image: AssetImage("assets/images/Upload Image.jpeg"),
-                            fit: BoxFit.fill
-                          ),
-                          border: Border.all(width: 1),
-                          borderRadius: BorderRadius.circular(30),
+                      : Container(
+                      height: 280,
+                      width: 280,
+                      decoration: BoxDecoration(
+                        image: const DecorationImage(
+                          image: AssetImage("assets/images/Upload Image.jpeg"),
+                          fit: BoxFit.fill
                         ),
+                        border: Border.all(width: 1),
+                        borderRadius: BorderRadius.circular(30),
                       ),
                     ),
                   ),
                 ),
+              ),
 
-                Visibility(
-                  visible: annotatedImage!=null,
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: annotatedImage != null
-                        ? InkWell(
-                          child: Container(
-                                            height: 360,
-                                            width: 360,
-                                            decoration: BoxDecoration(
+              SizedBox( height: 20,),
 
-                          border: Border.all(width: 1),
-                          borderRadius: BorderRadius.circular(30),
-
-                                            ),
-
-                                            child: ClipRRect( // Use ClipRRect to apply rounded corners to the child
-                          borderRadius: BorderRadius.circular(30),
-                          child: FittedBox(
-                            fit: BoxFit.cover,
-                            alignment: Alignment.topCenter,
-                            child: annotatedImage,
+              Visibility(
+                visible: _image == null,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    children: [
+                      InkWell(
+                        onTap: () async
+                        {
+                            showLoadingScreen(context, "Getting Image Picker");
+                            await pickImage();
+                            Navigator.of(context).pop();
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: buttonColor,
+                            borderRadius: BorderRadius.circular(15),
                           ),
-                                            ),
-                                          ),
-                        )
-
-                        : const SizedBox.shrink()
+                          child: Text("Upload From Gallery", style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.white),),
+                        ),
+                      ),
+                      SizedBox(width: 15,),
+                      InkWell(
+                        onTap: captureImage,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: CupertinoColors.systemGrey4,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Text("Capture Image", style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: buttonColor),),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+              ),
 
-                const SizedBox(height: 10),
+              Visibility(
+                visible: _image !=null,
+                child: InkWell(
+                  onTap: () async{
+                    showLoadingScreen(context, "Sending Image to Server");
 
-                Visibility(
-                  visible: annotatedImage == null,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 13),
-                    child: TextButton(onPressed: () async{
+                    HapticFeedback.heavyImpact();
 
-                      showLoadingScreen(context, "Sending Image to Server");
-
-                      HapticFeedback.heavyImpact();
-
-                      await sendImage();
-                      Navigator.of(context).pop();
-                      showLoadingScreen(context, "Analysing Scalp");
-                      await getAnnotedImage();
-                      Navigator.of(context).pop();
-                      HapticFeedback.vibrate();
-                    },
-
-                      style: ButtonStyle(
-                          minimumSize: MaterialStateProperty.all(const Size(double.infinity,45)),
-                          backgroundColor: MaterialStateProperty.all(buttonColor),
-                          shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)))
-                      ), child: const Text("Get Stage", style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),),
+                    await sendImage();
+                    Navigator.of(context).pop();
+                    showLoadingScreen(context, "Analysing Scalp");
+                    await getAnnotedImage();
+                    Navigator.of(context).pop();
+                    HapticFeedback.vibrate();
+                    generateResults();
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: CupertinoColors.systemGrey4,
+                      borderRadius: BorderRadius.circular(15),
                     ),
+                    child: Text("Get Hairloss Stage", style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: buttonColor),),
                   ),
                 ),
+              ),
 
-                Visibility(
-                  visible: annotatedImage!=null,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 13),
-                    child: TextButton(onPressed: () {
+              SizedBox(height: 20,),
 
+              Container(height: 300,)
 
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => StageInfoPage(stageInfo: stage_info[finalStage!]!["description"]!, stage: finalStage!, imageAddr: stage_info[finalStage!]!["imageAddr"]!)));
-
-                    },
-
-                      style: ButtonStyle(
-                          minimumSize: MaterialStateProperty.all(const Size(double.infinity,45)),
-                          backgroundColor: MaterialStateProperty.all(buttonColor),
-                          shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)))
-                      ), child: const Text("View Info", style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),),
-                    ),
-                  ),
-                ),
-
-                Container(height: 300, color: Colors.white,),
-
-              ],
-            ),
+            ],
           ),
         ),
-
       ),
-
-      floatingActionButton: FloatingActionButton(
-        onPressed: captureImage ,
-        backgroundColor: buttonColor,
-        foregroundColor: Colors.white,
-        child: const Icon(Icons.camera_alt),
-      ),
-
     );
   }
 

@@ -1,4 +1,5 @@
 
+import 'package:camera/camera.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,14 +7,6 @@ import 'package:scalp_smart/auth/authServices.dart';
 import 'auth/authWrapper.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
-
-// Future _firebaseBackgroundMessage(RemoteMessage message) async
-// {
-//   if(message.notification != null)
-//     {
-//       print("Some Notification ");
-//     }
-// }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

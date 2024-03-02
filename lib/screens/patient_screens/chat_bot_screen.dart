@@ -25,6 +25,7 @@ class ChatBotPage extends StatefulWidget {
 class _ChatBotPageState extends State<ChatBotPage> {
   String chatbotResponse = "";
   bool _isLoading = false;
+  final ScrollController _scrollController = ScrollController();
 
 
 
@@ -47,8 +48,7 @@ class _ChatBotPageState extends State<ChatBotPage> {
             map[key] = value.toString();
           });
           return map;
-        })
-            .toList(),
+        }).toList(),
       );
 
       setState(() {
@@ -106,6 +106,8 @@ class _ChatBotPageState extends State<ChatBotPage> {
       _firestore.collection("Users").doc(userid).update(
           {"chat_bot_history" : chat_history});
 
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+
       print(chat_history);
 
       setState(() {_isLoading = false;
@@ -117,8 +119,16 @@ class _ChatBotPageState extends State<ChatBotPage> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
+
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    });
+
+
     return Scaffold(
         appBar: AppBar(
           title: Text(
@@ -139,7 +149,9 @@ class _ChatBotPageState extends State<ChatBotPage> {
                 width: MediaQuery.of(context).size.width,
                 child: ListView.builder(
                   itemCount: chat_history.length,
+                  controller: _scrollController,
                   itemBuilder: (BuildContext context, int index) {
+
                     return Column(
                       children: [
                         Align(
