@@ -34,6 +34,7 @@ class _ImageThreadSQLState extends State<ImageThreadSQL> {
     {
       final data =  jsonDecode(response.body);
       image_history = data["images"];
+      print(image_history);
       setState(() {
 
       });
@@ -60,6 +61,7 @@ class _ImageThreadSQLState extends State<ImageThreadSQL> {
       body: FutureBuilder(
         future: imageThreadFuture,
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          print("Image Thread of ${widget.uid}");
           if(snapshot.connectionState == ConnectionState.waiting)
             {
               return Center(child: CircularProgressIndicator());

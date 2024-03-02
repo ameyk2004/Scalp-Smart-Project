@@ -62,7 +62,6 @@ class _DoctorDetailsPageState extends State<DoctorDetailsPage> {
                     {'assigned_patients': patient_list});
               }
             }
-
           },
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 20),

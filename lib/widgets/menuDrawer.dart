@@ -8,6 +8,7 @@ import 'package:scalp_smart/colors.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import '../auth/authServices.dart';
+import '../screens/about_us.dart';
 
 class CustomMenuDrawer extends StatefulWidget {
   final String profile_pic;
@@ -43,8 +44,9 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer> {
     setState(() {
 
     });
-
   }
+
+
 
   Future<void> pickImage() async {
     setState(() {
@@ -166,6 +168,21 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer> {
                   )
                 ],
               )),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                child: ListTile(
+                  onTap: ()
+                  {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AboutUsPage()));
+                  },
+                  leading: const Icon(
+                    Icons.groups,
+                    color: appBarColor,
+                  ),
+                  title: const Text("T E A M",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+              )
             ],
           ),
           Padding(

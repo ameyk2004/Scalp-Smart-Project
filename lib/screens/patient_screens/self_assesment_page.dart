@@ -95,7 +95,8 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
     });
 
     var url = Uri.parse(
-        'https://pblproject-ljlp.onrender.com/flutter/upload');
+        'https://pblproject-ljlp.onrender.com/flutter/upload?user_id=${_auth
+            .currentUser!.uid}');
 
     var request = http.MultipartRequest('POST', url);
     request.files.add(await http.MultipartFile.fromPath('image', _image!.path));
@@ -201,42 +202,39 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
                   child: Text("Your face must be clearly visible in the Photo. It will not be shared with anyone", textAlign: TextAlign.center, style: TextStyle(fontSize: 15))),
               SizedBox(height: 15,),
 
-              Visibility(
-                visible: annotatedImage == null,
-                child: Align(
-                  alignment: Alignment.center,
-                  child: InkWell(
-                    onTap: () async {
-                      showLoadingScreen(context, "Getting Image Picker");
-                      await pickImage();
-                      Navigator.of(context).pop();
-                    },
-                    child: _image != null
-                        ? Container(
-                      height: 280,
-                      width: 280,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: FileImage(_image!), // Assuming _image is a File
-                          fit: BoxFit.cover, // Cover the container while maintaining aspect ratio
-                          alignment: Alignment.topCenter, // Align the top of the image within the container
-                        ),
-                        border: Border.all(width: 1),
-                        borderRadius: BorderRadius.circular(30),
+              Align(
+                alignment: Alignment.center,
+                child: InkWell(
+                  onTap: () async {
+                    showLoadingScreen(context, "Getting Image Picker");
+                    await pickImage();
+                    Navigator.of(context).pop();
+                  },
+                  child: _image != null
+                      ? Container(
+                    height: 280,
+                    width: 280,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: FileImage(_image!), // Assuming _image is a File
+                        fit: BoxFit.cover, // Cover the container while maintaining aspect ratio
+                        alignment: Alignment.topCenter, // Align the top of the image within the container
                       ),
-                    )
+                      border: Border.all(width: 1),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  )
 
-                      : Container(
-                      height: 280,
-                      width: 280,
-                      decoration: BoxDecoration(
-                        image: const DecorationImage(
-                          image: AssetImage("assets/images/Upload Image.jpeg"),
-                          fit: BoxFit.fill
-                        ),
-                        border: Border.all(width: 1),
-                        borderRadius: BorderRadius.circular(30),
+                    : Container(
+                    height: 280,
+                    width: 280,
+                    decoration: BoxDecoration(
+                      image: const DecorationImage(
+                        image: AssetImage("assets/images/Upload Image.jpeg"),
+                        fit: BoxFit.fill
                       ),
+                      border: Border.all(width: 1),
+                      borderRadius: BorderRadius.circular(30),
                     ),
                   ),
                 ),
@@ -312,7 +310,7 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
 
               SizedBox(height: 20,),
 
-              Container(height: 300,)
+              Container(height: 200,)
 
             ],
           ),

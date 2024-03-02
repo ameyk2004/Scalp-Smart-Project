@@ -170,7 +170,6 @@ class _DoctorPageBodyState extends State<DoctorPageBody> {
 
                 DocumentSnapshot documentSnapshot = snapshot.data.docs[index];
 
-
                 if(documentSnapshot["image"] !="")
                   {
                     annotatedImage = Image.memory(base64Decode(documentSnapshot["image"]));
@@ -196,7 +195,7 @@ class _DoctorPageBodyState extends State<DoctorPageBody> {
                           Row(
                             children: [
                               Visibility(
-                                visible: annotatedImage == null,
+                                visible: annotatedImage == null ,
                                 child: Align(
                                     alignment: Alignment.center,
                                     child: Container(
@@ -276,7 +275,6 @@ class _DoctorPageBodyState extends State<DoctorPageBody> {
                                   ),
                                 ),
                               ),
-
 
                             ],
                           ),

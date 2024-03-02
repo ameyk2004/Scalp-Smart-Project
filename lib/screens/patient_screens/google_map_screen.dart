@@ -7,6 +7,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scalp_smart/colors.dart';
 
 import '../../widgets/widget_support.dart';
+import 'package:http/http.dart' as http;
+
 
 class GoogleMapScreen extends StatefulWidget {
   const GoogleMapScreen({super.key});
@@ -23,6 +25,27 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
     zoom: 14.4746,
   );
 
+  final Latitude = 18.458814682594884;
+  final Longitude = 73.85021653803034;
+  final radius = 50;
+  final apikey = "AIzaSyAVv-fXnoWeN6LG3c7RqAXykXtIUq4scnE";
+
+  getCUrrentLocation()
+  {
+  }
+
+  getNearbyPlaces() async
+  {
+    final url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+Latitude.toString()+","+Longitude.toString()+"&radius="+radius.toString()+"&types=dermatologist&key="+apikey;
+    print(url);
+    final response = await http.get(Uri.parse(url));
+
+    if(response.statusCode == 200)
+    {
+        print(response.body);
+    }
+  }
+
   List<Marker> _markers = [];
   List <Marker> list = [
     Marker(markerId: MarkerId("1"), position:  LatLng(18.458814682594884, 73.85021653803034), infoWindow: InfoWindow(
@@ -37,6 +60,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   @override
   void initState() {
     _markers.addAll(list);
+    getNearbyPlaces();
     super.initState();
   }
 

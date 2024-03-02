@@ -1,0 +1,47 @@
+final List<Map<String, String>> aboutUsDetails = [
+  {
+    "name": "Tirthraj Mahajan",
+    "role" : "Full Stack Developer",
+    "description": "Tirthraj Mahajan is a skilled web developer handling both front-end and back-end tasks for Scalp Smart. He's like the architect of our website, making sure everything looks great and works smoothly.\n\nWith his exceptional skills, he single-handedly developed the entire UI for the website. From crafting the layout to ensuring seamless navigation \n\nHis proficiency in Flask and SQL shines through as he seamlessly integrates machine learning models into the website and meticulously designs API endpoints.",
+    "linkedin": "https://www.linkedin.com/in/tirthraj-mahajan-909497258/",
+    "github": "https://github.com/tirthraj07",
+    "instagram": "https://www.instagram.com/tirthraj07/",
+    "image" : "assets/images/tirthraj.jpeg",
+  },
+  {
+    "name": "Advait Joshi",
+    "role" : "ML Specialist",
+    "description": "Advait Joshi is our go-to expert for all things AI and Machine Learning at Scalp Smart. With his innovative approach and deep understanding of computer vision algorithms, \n\nAdvait has played a pivotal role in developing specialized models for detecting different stages of baldness. But his expertise doesn't stop there. \n\nAdvait is also the mastermind behind Scalp Smart's AI-powered chatbot, providing users with valuable insights and assistance on scalp health and related queries. His dedication to pushing the boundaries of technology ensures that Scalp Smart remains at the forefront of innovation and reliability.",
+    "linkedin": "https://www.linkedin.com/in/joshiadvait/",
+    "github": "https://github.com/adv-AI-t",
+    "instagram": "https://www.instagram.com/i_advait_j/",
+    "image" : "assets/images/advait.jpeg",
+  },
+   {
+    "name": "Amey Kulkarni",
+    "role" : "App Developer",
+    "description": "Amey Kulkarni is the driving force behind bringing Scalp Smart to your mobile device. With expertise in mobile app development using Flutter, Amey transforms our concepts into a polished and user-friendly application. \n\nHe meticulously designs the app's interface, ensuring a seamless and visually appealing experience for our users. \n\nAdditionally, Amey plays a crucial role in database design and management. Amey implements a schema that seamlessly integrates with our backend infrastructure. He leverages his knowledge of Firebase to design a flexible and efficient database architecture that accommodates the dynamic needs of our growing user base.",
+    "linkedin": "https://www.linkedin.com/in/amey-amit-kulkarni/",
+    "github": "https://github.com/ameyk2004/",
+    "instagram": "https://www.instagram.com/_ameyx__/",
+     "image" : "assets/images/amey.jpeg",
+  },
+  {
+    "name": "Rinit Jain",
+    "role" : "ML Specialist",
+    "description": "Rinit Jain brings his expertise in machine learning to the forefront of Scalp Smart's development journey. \n\nAs a key contributor to the development of datasets and prediction models, Rinit plays a crucial role in enhancing the accuracy and efficacy of the platform. \n\nHis contributions extend to the creation of Scalp Smart's chatbot and the development of systems for capturing user images, essential for comprehensive analysis. Rinit's meticulous approach and dedication to innovation drive Scalp Smart's machine learning capabilities to new heights.",
+    "linkedin": "https://www.linkedin.com/in/rinit-jain-09979925b/",
+    "github": "https://github.com/RinitJain",
+    "instagram": "https://www.instagram.com/rinit_jain/",
+    "image" : "assets/images/rinit.jpeg",
+  },
+  {
+    "name": "Suvrat Ketkar",
+    "role" : "Frontend Developer",
+    "description": "Suvrat Ketkar's expertise in machine learning and database management forms the backbone of Scalp Smart's data-driven approach. \n\n\nWith a keen focus on training accurate models and developing comprehensive datasets, Suvrat ensures the platform's predictive capabilities are second to none. \n\nHis contributions extend to the development of product databases and integration of Google Maps API, enhancing Scalp Smart's functionality and user experience. \n\nSuvrat's commitment to excellence and attention to detail propel Scalp Smart forward as a leader in scalp health analysis and product recommendation.",
+    "linkedin": "https://www.linkedin.com/in/suvrat-ketkar-418a8b273/",
+    "github": "https://github.com/Suvrat-Ketkar",
+    "instagram": "https://www.instagram.com/suvratketkar_4/",
+    "image" : "assets/images/suvrat.jpeg",
+  }
+];
