@@ -34,7 +34,6 @@ class _ImageThreadSQLState extends State<ImageThreadSQL> {
     {
       final data =  jsonDecode(response.body);
       image_history = data["images"];
-      print(image_history);
       setState(() {
 
       });
@@ -74,7 +73,20 @@ class _ImageThreadSQLState extends State<ImageThreadSQL> {
 
                   annotatedImage = base64Decode(image_history[index]["image_data"]);
 
-                  return ImageThreadObject(imageUrl : annotatedImage, stage: image_history[index]["stage"], date: image_history[index]["upload_time"], );
+                  String timestampStr = image_history[index]["upload_time"];
+
+                  DateTime timestampObj = DateTime.parse(timestampStr);
+
+                  String formattedDate = "${timestampObj.day.toString().padLeft(2, '0')}/"
+                      "${timestampObj.month.toString().padLeft(2, '0')}/"
+                      "${timestampObj.year}";
+
+                  String formattedTime = "${(timestampObj.hour % 12).toString().padLeft(2, '0')}:"
+                      "${timestampObj.minute.toString().padLeft(2, '0')} "
+                      "${timestampObj.hour < 12 ? 'AM' : 'PM'}";
+
+
+                  return ImageThreadObject(imageUrl : annotatedImage, stage: image_history[index]["stage"], date: formattedDate, time : formattedTime);
 
                 }, separatorBuilder: (BuildContext context, int index) {
                   return SizedBox(height: 20,);
