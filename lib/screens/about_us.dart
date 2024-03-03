@@ -24,7 +24,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
         itemBuilder: (context, index){
 
 
-            return AboutUsHomeCard(name: aboutUsDetails[index]["name"]! , role: aboutUsDetails[index]["role"]!, age: 20, ImageSrc:aboutUsDetails[index]["image"]!, description:aboutUsDetails[index]["description"]!,);
+            return AboutUsHomeCard(name: aboutUsDetails[index]["name"]! , role: aboutUsDetails[index]["role"]!, age: 20, ImageSrc:aboutUsDetails[index]["image"]!, description:aboutUsDetails[index]["description"]!, InstaUrl: aboutUsDetails[index]["instagram"]!, LinkedinUrl: aboutUsDetails[index]["linkedin"]!, GithubUrl: aboutUsDetails[index]["github"]!,);
 
       }, separatorBuilder: (BuildContext context, int index) {
           return SizedBox(height: 20,);

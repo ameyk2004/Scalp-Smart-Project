@@ -137,7 +137,7 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer> {
                       width: 100,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
-                          color: appBarColor,
+                          color: Colors.blueAccent,
                           image:  DecorationImage(
                               image: NetworkImage(widget.profile_pic),
                             fit: BoxFit.cover
@@ -151,7 +151,7 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer> {
                       width: 100,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(50),
-                          color: appBarColor,
+                          color: Colors.blueAccent,
                           image:  DecorationImage(
                               image: NetworkImage(image_url),
                               fit: BoxFit.cover

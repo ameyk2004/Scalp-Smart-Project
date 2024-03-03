@@ -8,9 +8,12 @@ class AboutUsHomeCard extends StatelessWidget {
   final int age;
   final String ImageSrc;
   final String description;
+  final String InstaUrl;
+  final String LinkedinUrl;
+  final String GithubUrl;
 
   const AboutUsHomeCard({
-    super.key, required this.name, required this.role, required this.age, required this.ImageSrc, required this.description,
+    super.key, required this.name, required this.role, required this.age, required this.ImageSrc, required this.description, required this.InstaUrl, required this.LinkedinUrl, required this.GithubUrl,
   });
 
   @override
@@ -18,7 +21,7 @@ class AboutUsHomeCard extends StatelessWidget {
     return InkWell(
       onTap: ()
       {
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>AboutUsDetailsCard(imageSrc: ImageSrc, description: description, role: role, name: name,)));
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>AboutUsDetailsCard(imageSrc: ImageSrc, description: description, role: role, name: name, InstagramUrl: InstaUrl, LinkedinUrl: LinkedinUrl, GithubUrl: GithubUrl, )));
       },
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 20),

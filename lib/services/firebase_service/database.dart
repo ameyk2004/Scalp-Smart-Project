@@ -29,17 +29,6 @@ class DatabaseMethods{
     return uid;
   }
 
-  Future<String?> getDoctorProfilePic() async
-  {
-    String? uid = getCurrentUserUid();
-    if(uid!=null)
-      {
-        DocumentSnapshot userSnapShot = await FirebaseFirestore.instance.collection("Users").doc(uid).get();
-        return userSnapShot['image'];
-      }
-
-  }
-
   Future<Stream<QuerySnapshot<Map<String, dynamic>>>> getPendingRequests()
   async {
     return await FirebaseFirestore.instance.collection("Pending_Approvals").snapshots();

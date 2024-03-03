@@ -54,6 +54,7 @@ dependencies:
   firebase_storage: ^11.6.6
   google_maps_flutter: ^2.5.3
   camera: ^0.10.5+9
+  percent_indicator: ^4.0.1
 
 dev_dependencies:
   flutter_test:

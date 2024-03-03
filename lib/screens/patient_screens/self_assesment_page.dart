@@ -102,10 +102,13 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
     request.files.add(await http.MultipartFile.fromPath('image', _image!.path));
     var response = await request.send();
 
+
     if (response.statusCode == 200) {
       message = 'Image Sent Successfully !!';
+      print(message);
     } else {
       message = 'Error: ${response.statusCode}';
+      print(message);
     }
 
     setState(() {
@@ -120,7 +123,7 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-
+      print(data);
 
       message = data["stage"]; // get image base64
       String annotedImageFile = data["file"];
@@ -161,7 +164,11 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
             backgroundColor: dialogboxColor,
             actions: [
               InkWell(
-                onTap: _refresh,
+                onTap: () async
+                  {
+                    await _refresh();
+                    Navigator.of(context).pop();
+                  },
                   child: Container(child: Text("Try Again ?"),)
               ),
             ],
@@ -206,7 +213,7 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
                 alignment: Alignment.center,
                 child: InkWell(
                   onTap: () async {
-                    showLoadingScreen(context, "Getting Image Picker");
+                    showLoadingScreen(context, "Getting Image Picker", 1000);
                     await pickImage();
                     Navigator.of(context).pop();
                   },
@@ -245,13 +252,14 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
               Visibility(
                 visible: _image == null,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 8),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       InkWell(
                         onTap: () async
                         {
-                            showLoadingScreen(context, "Getting Image Picker");
+                            showLoadingScreen(context, "Getting Image Picker", 1000);
                             await pickImage();
                             Navigator.of(context).pop();
                         },
@@ -261,10 +269,9 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
                             color: buttonColor,
                             borderRadius: BorderRadius.circular(15),
                           ),
-                          child: Text("Upload From Gallery", style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.white),),
+                          child: Text("Upload From Gallery", style: TextStyle(fontSize: MediaQuery.of(context).size.width*0.039, fontWeight: FontWeight.bold, color: Colors.white),),
                         ),
                       ),
-                      SizedBox(width: 15,),
                       InkWell(
                         onTap: captureImage,
                         child: Container(
@@ -273,7 +280,7 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
                             color: CupertinoColors.systemGrey4,
                             borderRadius: BorderRadius.circular(15),
                           ),
-                          child: Text("Capture Image", style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: buttonColor),),
+                          child: Text("Capture Image", style: TextStyle(fontSize: MediaQuery.of(context).size.width*0.039, fontWeight: FontWeight.bold, color: buttonColor),),
                         ),
                       ),
                     ],
@@ -285,16 +292,19 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
                 visible: _image !=null,
                 child: InkWell(
                   onTap: () async{
-                    showLoadingScreen(context, "Sending Image to Server");
+                    showLoadingScreen(context, "Sending Image to Server", 3000);
 
                     HapticFeedback.heavyImpact();
 
                     await sendImage();
                     Navigator.of(context).pop();
-                    showLoadingScreen(context, "Analysing Scalp");
-                    await getAnnotedImage();
-                    Navigator.of(context).pop();
-                    HapticFeedback.vibrate();
+                    if(!message.contains("Error"))
+                      {
+                        showLoadingScreen(context, "Analysing Scalp", 10000);
+                        await getAnnotedImage();
+                        Navigator.of(context).pop();
+                        HapticFeedback.vibrate();
+                      }
                     generateResults();
                   },
                   child: Container(

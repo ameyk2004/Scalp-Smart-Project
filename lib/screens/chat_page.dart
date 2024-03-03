@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:scalp_smart/colors.dart';
 import 'package:scalp_smart/screens/doctor_screens/image_thread_screen.dart';
 import 'package:scalp_smart/screens/doctor_screens/image_thread_sql.dart';
+import 'package:scalp_smart/services/firebase_service/database.dart';
 import 'package:scalp_smart/widgets/chat_bubble.dart';
 import 'package:intl/intl.dart';
 import 'package:scalp_smart/widgets/widget_support.dart';
@@ -24,6 +27,7 @@ class _ChatPageState extends State<ChatPage> {
   ChatService chatService = ChatService();
   FirebaseAuth auth = FirebaseAuth.instance;
   TextEditingController messageController = TextEditingController();
+  String userRole = "";
 
   void sendMessage() async
   {
@@ -35,46 +39,94 @@ class _ChatPageState extends State<ChatPage> {
 
   }
 
+  void getUserRole() async
+  {
+    userRole = (await DatabaseMethods().getUserRole())!;
+    setState(() {
+
+    });
+  }
+
+  @override
+  void initState() {
+    getUserRole();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
 
-      appBar: AppBar(
-        title: Text(widget.receiver, style: AppWidget.headlineTextStyle(),),
-        actions: [
-          Padding(padding: const EdgeInsets.only(right: 10),
-          child: IconButton(onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context)=>ImageThreadSQL(uid: widget.recieverId)));
-          }, icon: const Icon(Icons.image_search, size: 35,)))
-        ],
-      ),
-
-      body: Column(
-        children: [
-          Expanded(
-            child: _buildMessageList(),
-          ),
-          Row(
+        appBar: AppBar(
+          backgroundColor: buttonColor,
+          scrolledUnderElevation: 0.0,
+          toolbarHeight: MediaQuery.of(context).size.height*0.17,
+          title: Column(
             children: [
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.only(left: 20,bottom: 30),
-                  child: CustomTextField(
-                    hintText: "Message",
-                    icon: const Icon(Icons.message_outlined),
-                    obscureText: false,
-                    textEditingController: messageController,
-                  ),
+              Align(
+                child: CircleAvatar(
+                  backgroundImage: userRole == "Doctor" ? NetworkImage("https://i.pinimg.com/736x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg") : NetworkImage("https://santevitahospital.com/img/vector_design_male_11zon.webp"),
+                  radius: MediaQuery.of(context).size.height*0.055 ,
                 ),
               ),
-              
-              Container(
-                margin: const EdgeInsets.only(bottom: 30, left: 20, right: 20),
-                  child: IconButton(icon:const Icon(Icons.send, size: 30,), onPressed: sendMessage,
-    ))],
+              SizedBox(height: 10,),
+              Text(widget.receiver, style: AppWidget.boldTextStyle().copyWith(fontSize: MediaQuery.of(context).size.height*0.028, color: Colors.white))
+            ],
           ),
-        ],
-      )
+          leading: Align(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                icon: const Icon(Icons.arrow_back_ios_new, size: 30),
+              )
+          ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ImageThreadSQL(uid: widget.recieverId)),
+                    );
+                  },
+                  icon: const Icon(Icons.image_search, size: 35, color: Colors.white60,),
+                ),
+              ),
+            ),
+          ],
+        ),
+
+        body: Column(
+          children: [
+            Expanded(
+              child: _buildMessageList(),
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 20,bottom: 30),
+                    child: CustomTextField(
+                      hintText: "Message",
+                      icon: const Icon(Icons.message_outlined),
+                      obscureText: false,
+                      textEditingController: messageController,
+                    ),
+                  ),
+                ),
+
+                Container(
+                    margin: const EdgeInsets.only(bottom: 30, left: 20, right: 20),
+                    child: IconButton(icon:const Icon(Icons.send, size: 30,), onPressed: sendMessage,
+                    ))],
+            ),
+          ],
+        )
 
     );
   }
