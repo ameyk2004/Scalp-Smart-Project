@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:scalp_smart/colors.dart';
 import 'package:scalp_smart/screens/patient_screens/doctorDetails.dart';
+import 'package:scalp_smart/services/details/api_key.dart';
 import 'package:scalp_smart/widgets/chat_bubble.dart';
 import 'package:scalp_smart/widgets/widget_support.dart';
 import 'package:http/http.dart' as http;
@@ -78,7 +79,8 @@ class _ChatBotPageState extends State<ChatBotPage> {
   TextEditingController textEditingController = TextEditingController();
 
   Future<void> sendPromptToChatBot(String prompt) async {
-    Uri url = Uri.parse("https://pblproject-ljlp.onrender.com/flutter/chatbot/prompt");
+    print(CHATBOT_URL);
+    Uri url = Uri.parse(CHATBOT_URL);
     final Timestamp timestamp = Timestamp.now();
 
     String jsonBody = jsonEncode({'prompt': prompt});
@@ -131,6 +133,7 @@ class _ChatBotPageState extends State<ChatBotPage> {
 
 
     return Scaffold(
+        
         appBar:  AppBar(
           backgroundColor: buttonColor,
           scrolledUnderElevation: 0.0,
@@ -139,7 +142,7 @@ class _ChatBotPageState extends State<ChatBotPage> {
             children: [
               Align(
                 child: CircleAvatar(
-                  backgroundImage: NetworkImage("https://static.vecteezy.com/system/resources/previews/021/303/384/original/chatbot-icon-cute-smiling-robot-cartoon-character-illustration-png.png"),
+                  backgroundImage: AssetImage("assets/images/chatbot.png"),
                   radius: MediaQuery.of(context).size.height*0.055 ,
                 ),
               ),
@@ -184,34 +187,31 @@ class _ChatBotPageState extends State<ChatBotPage> {
               ),
             ),
             Expanded(
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                child: ListView.builder(
-                  itemCount: chat_history.length,
-                  controller: _scrollController,
-                  itemBuilder: (BuildContext context, int index) {
+              child: ListView.builder(
+                itemCount: chat_history.length,
+                controller: _scrollController,
+                itemBuilder: (BuildContext context, int index) {
 
-                    return Column(
-                      children: [
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: ChatBubble(
-                            message: chat_history[index]["prompt"]!,
-                            isCurrentUser: true,
-                            timestamp: '',
-                          ),
+                  return Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: ChatBubble(
+                          message: chat_history[index]["prompt"]!,
+                          isCurrentUser: true,
+                          timestamp: '',
                         ),
-                        Align(
-                            alignment: Alignment.centerLeft,
-                            child: ChatBubble(
-                              message: chat_history[index]["response"]!,
-                              isCurrentUser: false,
-                              timestamp: '',
-                            )),
-                      ],
-                    );
-                  },
-                ),
+                      ),
+                      Align(
+                          alignment: Alignment.centerLeft,
+                          child: ChatBubble(
+                            message: chat_history[index]["response"]!,
+                            isCurrentUser: false,
+                            timestamp: '',
+                          )),
+                    ],
+                  );
+                },
               ),
             ),
             Row(

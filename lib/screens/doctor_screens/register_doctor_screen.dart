@@ -1,8 +1,15 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:scalp_smart/colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../widgets/loadingScreen.dart';
 import '../patient_screens/login_page.dart';
 import '../../widgets/customTextField.dart';
 import '../../widgets/widget_support.dart';
@@ -27,6 +34,9 @@ class _DoctorRegistrationPageState extends State<DoctorRegistrationPage> {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   bool isPendingRequest = false;
+
+  Image? _image = null;
+  String image_url="";
 
 
   _sendMail() async {
@@ -65,6 +75,42 @@ class _DoctorRegistrationPageState extends State<DoctorRegistrationPage> {
 
   }
 
+  Future<void> pickImage() async {
+    setState(() {});
+
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+    );
+
+    if (result != null) {
+      File file = File(result.files.single.path!);
+      print(result.files.single.path!);
+
+      String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
+
+      Reference referenceRoot = FirebaseStorage.instance.ref();
+      Reference refDirImages = referenceRoot.child("images");
+      Reference RefimageToUpload = refDirImages.child(uniqueFileName);
+
+      try {
+
+        await RefimageToUpload.putFile(file);
+
+        image_url = await RefimageToUpload.getDownloadURL();
+
+
+      } on Exception catch (e) {
+
+      }
+      setState(() {
+        print("Image Picked");
+        _image = Image.asset("assets/images/tickmark.png");
+      });
+    } else {
+      setState(() {});
+    }
+  }
+
   createDoctorPendingRequest() async
   {
     try
@@ -76,6 +122,7 @@ class _DoctorRegistrationPageState extends State<DoctorRegistrationPage> {
             "experience" : experienceController.text,
             "location" : locationController.text,
             "email" : emailController.text,
+            "certificate" : image_url,
           }
       );
 
@@ -164,7 +211,7 @@ class _DoctorRegistrationPageState extends State<DoctorRegistrationPage> {
                       child: Container(
                         width: MediaQuery.of(context).size.width,
                         padding: EdgeInsets.all(20),
-                        height: 550,
+                        height: 620,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(50),
@@ -188,6 +235,41 @@ class _DoctorRegistrationPageState extends State<DoctorRegistrationPage> {
                                 CustomTextField(hintText: "Experience", icon: Icon(Icons.work_history_outlined), obscureText: false, textEditingController: experienceController,),
                                 SizedBox(height: 15,),
                                 CustomTextField(hintText: "Location", icon: Icon(Icons.location_on_outlined), obscureText: false, textEditingController: locationController,),
+                                SizedBox(height: 15,),
+                                InkWell(
+                                  onTap: ()async {
+                                    showLoadingScreen(context, "Uploading Certificate", 1000);
+                                    await pickImage();
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Container(
+                                    height: 60,
+                                    padding: EdgeInsets.all(10),
+
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(width: 1, color: Colors.grey),
+                                      color: Color.fromRGBO(238, 237, 235,1),
+                                    ),
+
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.upload_file_outlined, size: 25,),
+                                        SizedBox(width: 10,),
+                                        Text("Degree Certificate", style: AppWidget.boldTextStyle(),),
+                                        SizedBox(width: 30,),
+                                        Visibility(
+                                          visible: _image != null,
+                                          child: Container(
+                                            child: _image,
+                                          ),
+                                        ),
+
+
+                                      ],
+                                    ),
+                                  ),
+                                ),
 
                               ],
                             ),

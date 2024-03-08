@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:scalp_smart/auth/authServices.dart';
@@ -24,7 +25,6 @@ class _AdminPageState extends State<AdminPage> {
     pendingdoctorStream = await DatabaseMethods().getPendingRequests();
     setState(() {});
   }
-
   @override
   void initState() {
     getPendingDoctors();
@@ -51,6 +51,7 @@ class _AdminPageState extends State<AdminPage> {
                   location: documentSnapshot["location"],
                   experience: documentSnapshot["experience"],
                   email: documentSnapshot["email"],
+                  certificateLink: documentSnapshot["certificate"],
                 );
               },
               separatorBuilder: (BuildContext context, int index) {

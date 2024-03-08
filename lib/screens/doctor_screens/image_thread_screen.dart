@@ -49,7 +49,7 @@ class _ImageThreadScreenState extends State<ImageThreadScreen> {
       itemCount: imageThread.length,
         itemBuilder: (context, index){
 
-      return ImageThreadObject(imageUrl: imageThread[index]['image'], stage:  imageThread[index]['stage'], date: imageThread[index]['date'] , time: '0');
+      return ImageThreadObject(imageUrl: imageThread[index]['image'], stage:  imageThread[index]['stage'], date: imageThread[index]['date'] ,);
 
     }, separatorBuilder: (BuildContext context, int index) {
         return SizedBox(height: 40);

@@ -28,7 +28,7 @@ class AboutUsDetailsCard extends StatelessWidget {
                   height: MediaQuery.of(context).size.height/3 - 40,
                   width:  MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: [appBarColor, buttonColor]),
+                    gradient: LinearGradient(colors: [appBarColor, Colors.cyan]),
                   ),
 
                   child: Column(

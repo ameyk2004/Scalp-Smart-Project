@@ -55,6 +55,8 @@ dependencies:
   google_maps_flutter: ^2.5.3
   camera: ^0.10.5+9
   percent_indicator: ^4.0.1
+  pdf: ^3.10.8
+  open_file: ^3.3.2
 
 dev_dependencies:
   flutter_test:

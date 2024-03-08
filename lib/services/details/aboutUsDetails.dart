@@ -10,11 +10,11 @@ final List<Map<String, String>> aboutUsDetails = [
   },
   {
     "name": "Advait Joshi",
-    "role" : "ML Specialist",
+    "role" : "AI Specialist",
     "description": "Advait Joshi is our go-to expert for all things AI and Machine Learning at Scalp Smart. With his innovative approach and deep understanding of computer vision algorithms, \n\nAdvait has played a pivotal role in developing specialized models for detecting different stages of baldness. But his expertise doesn't stop there. \n\nAdvait is also the mastermind behind Scalp Smart's AI-powered chatbot, providing users with valuable insights and assistance on scalp health and related queries. His dedication to pushing the boundaries of technology ensures that Scalp Smart remains at the forefront of innovation and reliability.",
     "linkedin": "https://www.linkedin.com/in/joshiadvait/",
     "github": "https://github.com/adv-AI-t",
-    "instagram": "https://www.instagram.com/i_advait_j/",
+    "instagram": "https://www.instagram.com/pixels_and_hue/",
     "image" : "assets/images/advait.jpeg",
   },
    {

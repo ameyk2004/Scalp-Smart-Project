@@ -1,10 +1,8 @@
 import 'dart:convert';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:scalp_smart/colors.dart';
-import 'package:scalp_smart/screens/doctor_screens/image_thread_screen.dart';
+import 'package:scalp_smart/services/details/api_key.dart';
+import 'package:scalp_smart/services/firebase_service/database.dart';
 import 'package:scalp_smart/widgets/widget_support.dart';
 import 'package:http/http.dart' as http;
 
@@ -26,10 +24,11 @@ class _ImageThreadSQLState extends State<ImageThreadSQL> {
    List image_history = [];
    dynamic annotatedImage;
    late Future<dynamic> imageThreadFuture;
+   String userRole = "";
 
   getImageThread(user_id) async
   {
-    final response = await http.get(Uri.parse("https://pblproject-ljlp.onrender.com/api/images/$user_id"));
+    final response = await http.get(Uri.parse("$DOMAIN/api/images/$user_id/all?api_key=$APP_API_KEY"));
     if(response.statusCode == 200)
     {
       final data =  jsonDecode(response.body);
@@ -43,6 +42,44 @@ class _ImageThreadSQLState extends State<ImageThreadSQL> {
     }
 
   }
+
+   String formatDate(String inputDate) {
+     String datePart = inputDate.split('+')[0].trim();
+     DateTime date = DateTime.parse(datePart);
+
+     // Define arrays for ordinal suffixes and months
+     List<String> ordinalSuffix = ['th', 'st', 'nd', 'rd'];
+     List<String> months = [
+       'January',
+       'February',
+       'March',
+       'April',
+       'May',
+       'June',
+       'July',
+       'August',
+       'September',
+       'October',
+       'November',
+       'December'
+     ];
+
+     int day = date.day;
+     int month = date.month;
+     int year = date.year;
+     int hours = date.hour;
+     int minutes = date.minute;
+
+     String ampm = hours >= 12 ? 'pm' : 'am';
+     int formattedHours = hours % 12 == 0 ? 12 : hours % 12;
+
+     // Construct the formatted date string
+     String formattedDate =
+         '$day ${months[month - 1]} $year, ${formattedHours}:${minutes.toString().padLeft(2, '0')} $ampm';
+
+     print(formattedDate);
+     return formattedDate;
+   }
 
   @override
   void initState() {
@@ -60,7 +97,6 @@ class _ImageThreadSQLState extends State<ImageThreadSQL> {
       body: FutureBuilder(
         future: imageThreadFuture,
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          print("Image Thread of ${widget.uid}");
           if(snapshot.connectionState == ConnectionState.waiting)
             {
               return Center(child: CircularProgressIndicator());
@@ -74,19 +110,15 @@ class _ImageThreadSQLState extends State<ImageThreadSQL> {
                   annotatedImage = base64Decode(image_history[index]["image_data"]);
 
                   String timestampStr = image_history[index]["upload_time"];
+                  print(timestampStr);
 
                   DateTime timestampObj = DateTime.parse(timestampStr);
 
-                  String formattedDate = "${timestampObj.day.toString().padLeft(2, '0')}/"
-                      "${timestampObj.month.toString().padLeft(2, '0')}/"
-                      "${timestampObj.year}";
-
-                  String formattedTime = "${(timestampObj.hour % 12).toString().padLeft(2, '0')}:"
-                      "${timestampObj.minute.toString().padLeft(2, '0')} "
-                      "${timestampObj.hour < 12 ? 'AM' : 'PM'}";
+                  String formattedDate = formatDate(timestampStr);
 
 
-                  return ImageThreadObject(imageUrl : annotatedImage, stage: image_history[index]["stage"], date: formattedDate, time : formattedTime);
+
+                  return ImageThreadObject(imageUrl : annotatedImage, stage: image_history[index]["stage"], date: formattedDate,);
 
                 }, separatorBuilder: (BuildContext context, int index) {
                   return SizedBox(height: 20,);

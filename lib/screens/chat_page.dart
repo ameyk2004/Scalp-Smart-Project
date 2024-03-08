@@ -89,9 +89,10 @@ class _ChatPageState extends State<ChatPage> {
                 alignment: Alignment.topRight,
                 child: IconButton(
                   onPressed: () {
+                    print(userRole);
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ImageThreadSQL(uid: widget.recieverId)),
+                      MaterialPageRoute(builder: (context) => ImageThreadSQL(uid: userRole == "Doctor" ? widget.recieverId : auth.currentUser!.uid)),
                     );
                   },
                   icon: const Icon(Icons.image_search, size: 35, color: Colors.white60,),

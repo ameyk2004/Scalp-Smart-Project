@@ -9,9 +9,8 @@ class ImageThreadObject extends StatelessWidget {
   final Uint8List imageUrl;
   final String stage;
   final String date;
-  final String time;
   const ImageThreadObject({
-    super.key, required this.imageUrl, required this.stage, required this.date, required this.time,
+    super.key, required this.imageUrl, required this.stage, required this.date,
   });
 
   @override
@@ -55,9 +54,7 @@ class ImageThreadObject extends StatelessWidget {
           SizedBox(height: 10,),
           Text("Stage - $stage", style: AppWidget.headlineTextStyle().copyWith(color: Colors.white),),
           SizedBox(height: 5,),
-          Text("Date - $date", style: AppWidget.lightTextStyle().copyWith(color: Colors.white),),
-          SizedBox(height: 5,),
-          Text("Time - $time", style: AppWidget.lightTextStyle().copyWith(color: Colors.white),),
+          Text(date, style: AppWidget.lightTextStyle().copyWith(color: Colors.white),),
         ],
       ),
     );

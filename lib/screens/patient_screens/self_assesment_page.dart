@@ -14,6 +14,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
+import 'package:scalp_smart/services/details/api_key.dart';
 import 'package:scalp_smart/widgets/widget_support.dart';
 import '../../colors.dart';
 import '../../services/details/stage_info_details.dart';
@@ -31,6 +32,7 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
   String message = 'Upload Your Image Below';
   Image? annotatedImage;
   String? finalStage;
+  String? imgStr;
 
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -95,8 +97,7 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
     });
 
     var url = Uri.parse(
-        'https://pblproject-ljlp.onrender.com/flutter/upload?user_id=${_auth
-            .currentUser!.uid}');
+        '$UPLOAD_IMAGE_URL${_auth.currentUser!.uid}');
 
     var request = http.MultipartRequest('POST', url);
     request.files.add(await http.MultipartFile.fromPath('image', _image!.path));
@@ -117,8 +118,7 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
 
   Future getAnnotedImage() async {
     print("Running command");
-    var url = 'https://pblproject-ljlp.onrender.com/flutter/predict?user_id=${_auth
-        .currentUser!.uid}';
+    var url = '$PREDICT_URL${_auth.currentUser!.uid}';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -145,6 +145,7 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
 
         setState(() {
           annotatedImage = Image.memory(base64Decode(annotedImageFile));
+          imgStr = data["file"];
           finalStage = data["stage"];
         });
       }
@@ -155,7 +156,7 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
   {
       if(annotatedImage!=null)
         {
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>ImageResulPage(annotatedImage: annotatedImage!, stage: finalStage!,)));
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>ImageResulPage(annotatedImage: annotatedImage!, stage: finalStage!, ImageString: imgStr!,)));
         }
       else
         {

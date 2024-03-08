@@ -85,8 +85,6 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer> {
       } on Exception catch (e) {
 
       }
-
-
       setState(() {
         profile_pic = file;
       });
@@ -107,6 +105,11 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer> {
     {
       print(e.toString());
     }
+  }
+
+  void resetPassword()
+  {
+    FirebaseAuth.instance.sendPasswordResetEmail(email: widget.userName);
   }
 
   @override
@@ -168,21 +171,41 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer> {
                   )
                 ],
               )),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-                child: ListTile(
-                  onTap: ()
-                  {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AboutUsPage()));
-                  },
-                  leading: const Icon(
-                    Icons.groups,
-                    color: appBarColor,
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                    child: ListTile(
+                      onTap: ()
+                      {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AboutUsPage()));
+                      },
+                      leading: const Icon(
+                        Icons.groups,
+                        color: appBarColor,
+                      ),
+                      title: const Text("T E A M",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
                   ),
-                  title: const Text("T E A M",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                ),
-              )
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    child: ListTile(
+                      onTap: () async
+                      {
+                        await FirebaseAuth.instance.sendPasswordResetEmail(email: widget.userName);
+                      },
+                      leading: const Icon(
+                        Icons.settings,
+                        color: appBarColor,
+                      ),
+                      title: const Text("P A S S W O R D",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                  )
+                ],
+              ),
             ],
           ),
           Padding(
