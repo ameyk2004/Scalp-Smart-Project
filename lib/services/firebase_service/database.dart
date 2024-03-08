@@ -39,6 +39,16 @@ class DatabaseMethods{
     await  FirebaseFirestore.instance.collection("Pending_Approvals").doc(uid).delete();
   }
 
+  Future<Stream<QuerySnapshot>> getReportedDoctors() async
+  {
+    return await FirebaseFirestore.instance.collection("Reported Doctors").snapshots();
+  }
+
+  Future<Stream<QuerySnapshot>> getReportOfDoctor(String docId) async
+  {
+    return await FirebaseFirestore.instance.collection("Reported Doctors").doc(docId).collection("Reports").snapshots();
+  }
+
 
   Future<String?> getUserRole() async{
     String? uid =  getCurrentUserUid();

@@ -19,6 +19,10 @@ class DoctorDetailsPage extends StatefulWidget {
 
 class _DoctorDetailsPageState extends State<DoctorDetailsPage> {
 
+  TextEditingController dateController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+
 
   Stream<QuerySnapshot>? doctorStream;
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -36,6 +40,35 @@ class _DoctorDetailsPageState extends State<DoctorDetailsPage> {
   void initState() {
     getOnLooad();
     super.initState();
+  }
+
+  Widget buildTextField(String label, TextEditingController controller, {int maxLines = 1}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextField(
+        controller: controller,
+        maxLines: maxLines,
+        decoration: InputDecoration(
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15.0),
+            borderSide: BorderSide(
+              width: 1.5,
+              color: appBarColor,
+            ),
+          ),
+          hintText: label,
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15.0),
+            borderSide: BorderSide(
+              width: 1,
+              color: Colors.black,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget allDoctorDetails()
@@ -94,6 +127,60 @@ class _DoctorDetailsPageState extends State<DoctorDetailsPage> {
                   )
                 ],
               ),
+
+              trailing: IconButton(icon : Icon(Icons.report_outlined, size: 30,), onPressed: () {
+
+
+
+                showDialog(context: context, builder: (context)=>AlertDialog(
+                  title: Text("Report Doctor", style: AppWidget.boldTextStyle(),),
+                  backgroundColor: dialogboxColor,
+                  contentPadding: EdgeInsets.all(16.0),
+                  content: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        buildTextField("Your Name", nameController),
+                        buildTextField("Date of Incident", dateController),
+                        buildTextField("Description of Issue", descriptionController, maxLines: 3),
+                      ],
+                    ),
+                  ),
+                  actions: [
+                    InkWell(
+                      onTap: () async
+                      {
+                        await _firestore.collection("Reported Doctors").doc(documentSnapshot["uid"]).set({
+                          "name" : documentSnapshot["name"],
+                          "image" :  documentSnapshot["image"],
+                          "uid" :  documentSnapshot["uid"],
+                        });
+
+                        await _firestore.collection("Reported Doctors").doc(documentSnapshot["uid"]).collection("Reports").doc().set({
+                          "date" : dateController.text,
+                          "report" : descriptionController.text,
+                          "reported by" : _auth.currentUser!.email,
+                          "name" : nameController.text,
+                        });
+
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Report Submitted")));
+
+
+                      },
+                      child: Container(
+                        height: 40,
+                        width: 100,
+                        padding: EdgeInsets.symmetric(vertical: 5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: appBarColor
+                        ),
+                        child: Center(child: Text("Submit", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 17),)),
+                      ),
+                    ),
+                  ],
+                ));
+
+              },),
 
 
             ),

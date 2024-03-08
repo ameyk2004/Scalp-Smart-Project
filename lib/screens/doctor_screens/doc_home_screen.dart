@@ -205,9 +205,7 @@ class _DoctorPageBodyState extends State<DoctorPageBody> {
                                         image: const DecorationImage(
                                           image: NetworkImage(
                                             "https://static.vecteezy.com/system/resources/previews/014/489/917/non_2x/man-avatar-icon-flat-vector.jpg",),
-                                          // Assuming _image is a File
                                           fit: BoxFit.cover,
-                                          // Cover the container while maintaining aspect ratio
                                           alignment: Alignment
                                               .topCenter, // Align the top of the image within the container
                                         ),

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:scalp_smart/auth/authServices.dart';
+import 'package:scalp_smart/screens/admin_screens/reported_doc_screen.dart';
 import 'package:scalp_smart/services/firebase_service/database.dart';
 import 'package:scalp_smart/widgets/menuDrawer.dart';
 import 'doctor_approve_card.dart';
@@ -92,12 +93,18 @@ class _AdminPageState extends State<AdminPage> {
               );
             },
           ),
+
           title: Text(
             "Scalp Smart Admin",
             style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: MediaQuery.sizeOf(context).width * 0.055),
           ),
+          actions: [
+            IconButton(onPressed: (){
+              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ReportedDoctorScreen()));
+            }, icon: Icon(Icons.report_outlined, size: 30,))
+          ],
           centerTitle: false,
         ),
         drawer: CustomMenuDrawer(
