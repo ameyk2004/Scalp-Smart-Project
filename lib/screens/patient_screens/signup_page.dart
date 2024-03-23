@@ -48,7 +48,7 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
         );
 
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>AuthWrapper()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>AuthWrapper(tutorial: true,)));
 
         // No need to call setState here, as the authentication state change
         // will automatically trigger a rebuild in widgets listening to the authStateChanges stream

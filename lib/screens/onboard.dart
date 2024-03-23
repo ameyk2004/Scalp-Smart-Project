@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scalp_smart/colors.dart';
-import 'package:scalp_smart/screens/patient_screens/signup_page.dart';
+import 'package:scalp_smart/screens/patient_screens/login_page.dart';
 import 'package:scalp_smart/widgets/content_model.dart';
 import 'package:scalp_smart/widgets/widget_support.dart';
 
@@ -88,7 +88,7 @@ class _OnboardState extends State<Onboard> {
             onTap: () {
               if (currentIndex == contents.length - 1) {
                 Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => const SignUpPage()));
+                    context, MaterialPageRoute(builder: (context) => const LoginPage()));
               }
               _controller.nextPage(
                   duration: const Duration(milliseconds: 100),

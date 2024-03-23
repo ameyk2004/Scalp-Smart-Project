@@ -80,7 +80,7 @@ class _DoctorDetailsPageState extends State<DoctorDetailsPage> {
 
         return InkWell(
           onTap: () async{
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ChatPage(receiver: documentSnapshot["name"], recieverId: documentSnapshot.id,)));
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ChatPage(receiver: documentSnapshot["name"], recieverId: documentSnapshot.id, recieverToken: documentSnapshot["deviceToken"], )));
             final  docSnapshot = await  _firestore.collection("Users").doc(documentSnapshot.id).get();
             if (docSnapshot.exists) {
               List<dynamic> historyFromFirestore = docSnapshot.data()?['assigned_patients'] ?? [];

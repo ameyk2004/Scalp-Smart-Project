@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scalp_smart/auth/authServices.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'auth/authWrapper.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -39,7 +40,8 @@ class MyApp extends StatelessWidget {
           ),
           scaffoldBackgroundColor: Colors.white
         ),
-        home: AuthWrapper(),
+        home:
+        ShowCaseWidget( builder : Builder( builder : (_) => AuthWrapper(tutorial: false,))),
         debugShowCheckedModeBanner: false,
       ),
     );

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:scalp_smart/colors.dart';
 import 'package:scalp_smart/services/details/api_key.dart';
 import 'package:scalp_smart/services/firebase_service/database.dart';
 import 'package:scalp_smart/widgets/widget_support.dart';
@@ -92,40 +93,49 @@ class _ImageThreadSQLState extends State<ImageThreadSQL> {
     print(image_history.length);
     return Scaffold(
       appBar: AppBar(
-          title : Text("Image Thread", style: AppWidget.headlineTextStyle(),)
+          title : Text("Image Thread", style: AppWidget.headlineTextStyle().copyWith(color: Colors.white),),
+        backgroundColor: buttonColor,
       ),
-      body: FutureBuilder(
-        future: imageThreadFuture,
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          if(snapshot.connectionState == ConnectionState.waiting)
-            {
-              return Center(child: CircularProgressIndicator());
-            }
-          else{
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image(image: AssetImage("assets/images/chatWallpaper.jpg"),
+            fit: BoxFit.cover,
 
-            return ListView.separated(
-                itemCount: image_history.length,
-                itemBuilder: (context, index){
+          ),
+          FutureBuilder(
+            future: imageThreadFuture,
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              if(snapshot.connectionState == ConnectionState.waiting)
+                {
+                  return Center(child: CircularProgressIndicator());
+                }
+              else{
 
-                  annotatedImage = base64Decode(image_history[index]["image_data"]);
+                return ListView.builder(
+                    itemCount: image_history.length,
+                    itemBuilder: (context, index){
 
-                  String timestampStr = image_history[index]["upload_time"];
-                  print(timestampStr);
+                      annotatedImage = base64Decode(image_history[index]["image_data"]);
 
-                  DateTime timestampObj = DateTime.parse(timestampStr);
+                      String timestampStr = image_history[index]["upload_time"];
+                      print(timestampStr);
 
-                  String formattedDate = formatDate(timestampStr);
+                      DateTime timestampObj = DateTime.parse(timestampStr);
+
+                      String formattedDate = formatDate(timestampStr);
 
 
 
-                  return ImageThreadObject(imageUrl : annotatedImage, stage: image_history[index]["stage"], date: formattedDate,);
+                      return ImageThreadObject(imageUrl : annotatedImage, stage: image_history[index]["stage"], date: formattedDate,);
 
-                }, separatorBuilder: (BuildContext context, int index) {
-                  return SizedBox(height: 20,);
-            },);
+                    }
+                );
 
-          }
-        },
+              }
+            },
+          ),
+        ],
       ),
     );
   }

@@ -3,7 +3,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 class PushNotifications{
   static final firebaseMessaging = FirebaseMessaging.instance;
 
-  //request messaging
   static Future initialize() async
   {
 
@@ -22,6 +21,14 @@ class PushNotifications{
       print("Device Token : $deviceToken");
 
   }
+
+  Future<String> getToken() async
+  {
+    final deviceToken = await firebaseMessaging.getToken();
+    return deviceToken ?? "";
+  }
+
+
 
 
 

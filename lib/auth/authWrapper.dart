@@ -7,7 +7,8 @@ import '../screens/onboard.dart';
 import '../services/firebase_service/database.dart';
 
 class AuthWrapper extends StatefulWidget {
-  const AuthWrapper({super.key});
+  final bool tutorial;
+  const AuthWrapper({super.key, required this.tutorial});
 
   @override
   State<AuthWrapper> createState() => _AuthWrapperState();
@@ -15,9 +16,11 @@ class AuthWrapper extends StatefulWidget {
 
 class _AuthWrapperState extends State<AuthWrapper> {
 
+
   @override
   void initState() {
     super.initState();
+
   }
 
 
@@ -50,7 +53,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
               else {
 
                 if (roleSnapshot.data == "Patient") {
-                  return const HomePage(); // User is a patient
+                  return HomePage(); // User is a patient
                 } else if(roleSnapshot.data == "Doctor"){
                   return const DoctorHomePage();
                 }

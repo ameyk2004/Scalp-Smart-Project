@@ -19,11 +19,18 @@ class ImageThreadObject extends StatelessWidget {
     final threadImage = Image.memory(imageUrl);
 
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 35),
+      margin: EdgeInsets.symmetric(horizontal: 35, vertical: 25),
       padding: EdgeInsets.symmetric(vertical: 20),
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-        color: buttonColor,
+        gradient: LinearGradient(
+          begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
+            colors: [
+              appBarColor, buttonColor
+            ]
+
+        ),
         border: Border.all(width: 1),
         borderRadius: BorderRadius.circular(30),
       ),

@@ -21,7 +21,8 @@ import '../../widgets/widget_support.dart';
 import 'doctorDetails.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  bool signupDone;
+  HomePage({super.key, required this.signupDone});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -36,8 +37,15 @@ class _HomePageState extends State<HomePage> {
   int selectedPage = 0;
   String profile_pic = userDetails["profile_pic"]!;
   final keyOne = GlobalKey();
-  final keyTwo = GlobalKey();
-  final keyThree = GlobalKey();
+  final GlobalKey keyTwo = GlobalKey();
+  final GlobalKey keyThree = GlobalKey();
+  final GlobalKey keyFour = GlobalKey();
+  final GlobalKey keyFive = GlobalKey();
+  final GlobalKey keySix = GlobalKey();
+  final GlobalKey keySeven = GlobalKey();
+  final GlobalKey keyEight = GlobalKey();
+  final GlobalKey keyNine = GlobalKey();
+  final GlobalKey keyTen = GlobalKey();
   bool showTutorial = true;
   bool dialogShown = false;
 
@@ -45,6 +53,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      ShowCaseWidget.of(context)?.startShowCase([keyOne, keyTwo, keyThree, keyFour, keyFive, keySix, keySeven]);
+    });
+
   }
 
   navigateTo(int index) {
@@ -54,46 +66,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   final List<Widget> pages = [
-    HomePageBody(),
+    TutorialPageBody(),
     SelfAssessmentPage(),
     ShopPage(),
   ];
 
-  void showTutorialDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("New to App?"),
-        content: Text("Would you like to start the tutorial?"),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context); // Dismiss the dialog
-              setState(() {
-                dialogShown = true;
-                showTutorial = false; // Set flag to false to skip tutorial next time
-              });
-            },
-            child: Text("No"),
-          ),
-          TextButton(
-            onPressed: () {
-              dialogShown = true;
-              Navigator.pop(context);
-              startTutorial(); // Start the tutorial
-            },
-            child: Text("Yes"),
-          ),
-        ],
-      ),
-    );
-  }
-
   // Function to start the tutorial
   void startTutorial() {
-    Navigator.pop(context);
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      ShowCaseWidget.of(context)?.startShowCase([keyOne, keyTwo]);
+      ShowCaseWidget.of(context)?.startShowCase([keyOne, keyTwo, keyThree, keyFour, keyFive, keySix, keySeven]);
     });
   }
 
@@ -106,29 +87,34 @@ class _HomePageState extends State<HomePage> {
 
         leadingWidth: 90,
 
-        leading: Builder(
+        leading: Showcase(
 
-          builder: (BuildContext context) {
-            return InkWell(
-              onTap: () {
+          key: keySeven,
+          description: 'Profile Settings',
+          child: Builder(
 
-                Scaffold.of(context).openDrawer();
+            builder: (BuildContext context) {
+              return InkWell(
+                onTap: () {
 
-              },
-              child: Container(
+                  Scaffold.of(context).openDrawer();
 
-                width: 5,
+                },
+                child: Container(
 
-                margin: EdgeInsets.only(left: 30),
+                  width: 5,
 
-                decoration: BoxDecoration(
-                  image: DecorationImage(image: NetworkImage(profile_pic), fit: BoxFit.cover),
-                  borderRadius: BorderRadius.circular(50),
+                  margin: EdgeInsets.only(left: 30),
+
+                  decoration: BoxDecoration(
+                    image: DecorationImage(image: NetworkImage(profile_pic), fit: BoxFit.cover),
+                    borderRadius: BorderRadius.circular(50),
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
 
+          ),
         ),
 
         title: Text(
@@ -139,34 +125,47 @@ class _HomePageState extends State<HomePage> {
         ),
         centerTitle: false,
         actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>DoctorDetailsPage()));
-              },
-              icon: const Icon(
-                Icons.message_outlined,
-                color: appBarColor,
-                size: 35,
-              )),
-          IconButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>ChatBotPage()));
-              },
-              icon: const Icon(
-                Icons.graphic_eq_sharp,
-                color: appBarColor,
-                size: 35,
-              )),
+          Showcase(
+            key: keyOne,
+            description: 'Connect to doctors',
+            child: IconButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>DoctorDetailsPage()));
+                },
+                icon: const Icon(
+                  Icons.message_outlined,
+                  color: appBarColor,
+                  size: 35,
+                )),
+          ),
+          Showcase(
+            key: keyTwo,
+            description: 'Scalp Smart Chatbot',
+            child: IconButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ChatBotPage()));
+                },
+                icon: const Icon(
+                  Icons.graphic_eq_sharp,
+                  color: appBarColor,
+                  size: 35,
+                )),
+          ),
 
-          IconButton(
-              onPressed: () {
-                showSearch(context: context, delegate: CustomSearchDelegate());
-              },
-              icon: const Icon(
-                Icons.search,
-                color: appBarColor,
-                size: 35,
-              )),
+          Showcase(
+
+            key: keyThree,
+            description: 'Search Products',
+            child: IconButton(
+                onPressed: () {
+                  showSearch(context: context, delegate: CustomSearchDelegate());
+                },
+                icon: const Icon(
+                  Icons.search,
+                  color: appBarColor,
+                  size: 35,
+                )),
+          ),
         ],
       ),
 
@@ -183,31 +182,42 @@ class _HomePageState extends State<HomePage> {
         items: [
           BottomNavigationBarItem(
             label: "Home",
-            icon: Icon(Icons.home, size: 30,),
+            icon: Showcase(
+
+                key: keyFive,
+                description: 'Navigate to Home',
+                child: Icon(Icons.home, size: 30,)),
           ),
           BottomNavigationBarItem(
             label: "Predict",
-            icon: Container(
-              width: 80,
-              height: 50,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    colors: [
+            icon: Showcase(
 
-                      appBarColor,
-                      Colors.deepPurple.shade300,
+              key: keyFour,
+              description: 'Scalp Smart Chatbot',
+              child: Container(
+                  width: 80,
+                  height: 50,
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          colors: [
 
-                    ]
+                            appBarColor,
+                            Colors.deepPurple.shade300,
 
-                ),
-                  borderRadius: BorderRadius.circular(25)),
+                          ]
 
-                child: Icon(Icons.insights_outlined, color: Colors.white,size: 30,)
+                      ),
+                      borderRadius: BorderRadius.circular(25)),
+
+                  child: Icon(Icons.insights_outlined, color: Colors.white,size: 30,)
+              ),
             ),
           ),
           BottomNavigationBarItem(
               label: "Shop",
-              icon: Icon(Icons.shopping_bag,size: 30,)
+              icon: Showcase(
+                  key: keySix,
+                  description: 'Products Shop',child: Icon(Icons.shopping_bag,size: 30,))
 
           ),
         ],
@@ -216,16 +226,16 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class HomePageBody extends StatefulWidget {
-  const HomePageBody({
+class TutorialPageBody extends StatefulWidget {
+  const TutorialPageBody({
     super.key,
   });
 
   @override
-  State<HomePageBody> createState() => _HomePageBodyState();
+  State<TutorialPageBody> createState() => _HomePageBodyState();
 }
 
-class _HomePageBodyState extends State<HomePageBody> {
+class _HomePageBodyState extends State<TutorialPageBody> {
 
   final keyOne = GlobalKey();
 

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:scalp_smart/services/chat_service/push_notifications.dart';
 
 class AuthService extends ChangeNotifier{
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -27,6 +28,7 @@ class AuthService extends ChangeNotifier{
         'name': name,
         'image' : '',
         'online' : true,
+        'deviceToken' : "",
         'role' : 'Patient',
       });
       print("Online Updated");
@@ -39,11 +41,14 @@ class AuthService extends ChangeNotifier{
 
   Future<UserCredential> loginEmailPassword(String email, String password) async {
     try {
+      final deviceToken = await PushNotifications().getToken();
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
       await _firestore.collection("Users").doc(userCredential.user!.uid).update({
         'online' : true,
+        'deviceToken' : deviceToken,
       });
       print("Online Updated");
+      print(deviceToken);
       return userCredential;
     } catch (e) {
       throw e.toString();

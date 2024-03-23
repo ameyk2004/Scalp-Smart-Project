@@ -8,6 +8,21 @@ class DatabaseMethods{
     return FirebaseFirestore.instance.collection("Users").where("role", isEqualTo: "Patient").snapshots();
   }
 
+  Future<String?> getUserName() async{
+    String? uid =  getCurrentUserUid();
+    if (uid != null) {
+      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection("Users")
+          .doc(uid).get();
+
+      if (userSnapshot.exists) {
+        String? name = userSnapshot['name'];
+        return name;
+      }
+    }
+    return null; // User not found or role not defined
+  }
+
   Future<Stream<QuerySnapshot>> getDoctorDetails() async{
     return FirebaseFirestore.instance
         .collection("Users")

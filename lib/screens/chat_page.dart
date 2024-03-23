@@ -1,9 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scalp_smart/colors.dart';
-import 'package:scalp_smart/screens/doctor_screens/image_thread_screen.dart';
 import 'package:scalp_smart/screens/doctor_screens/image_thread_sql.dart';
 import 'package:scalp_smart/services/firebase_service/database.dart';
 import 'package:scalp_smart/widgets/chat_bubble.dart';
@@ -12,11 +14,13 @@ import 'package:scalp_smart/widgets/widget_support.dart';
 
 import '../services/chat_service/chat_service.dart';
 import '../widgets/customTextField.dart';
+import 'package:http/http.dart' as http;
 
 class ChatPage extends StatefulWidget {
   final String receiver;
   final String recieverId;
-  const ChatPage({super.key, required this.receiver, required this.recieverId});
+  final String recieverToken;
+  const ChatPage({super.key, required this.receiver, required this.recieverId, required this.recieverToken});
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -28,13 +32,43 @@ class _ChatPageState extends State<ChatPage> {
   FirebaseAuth auth = FirebaseAuth.instance;
   TextEditingController messageController = TextEditingController();
   String userRole = "";
+  String name = "";
+
+  Future<void> sendMessageNotification(String message, String recieverName,) async {
+    print(widget.recieverToken);
+    final body = {
+      "to": widget.recieverToken,
+      "notification": {
+        "title": name,
+        "body": message
+      }
+    };
+
+    final response = await http.post(
+      Uri.parse("https://fcm.googleapis.com/fcm/send"),
+      headers: {
+        HttpHeaders.contentTypeHeader: "application/json",
+        HttpHeaders.authorizationHeader:
+        "key=AAAA0nmzvoo:APA91bGh-ty8ofrUuI7R675c3swnnXCYM6IT_GvKBDLund2TleTEBL0jLhcamWEIe2TqhUPKYpfh7pxm7W3qEdPJZkFB7Bol64mlB5sn-MQBK7Kz92fkikt1ZTlkISzJ6v4IlMN40IDk",
+      },
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 200) {
+      print("Notification sent successfully to user");
+    } else {
+      print("Failed to send notification. Status code: ${response.statusCode}");
+    }
+  }
 
   void sendMessage() async
   {
     if(messageController.text.isNotEmpty)
     {
-      await chatService.sendMessage(widget.recieverId, messageController.text);
+      await chatService.sendMessage(widget.recieverId, messageController.text, userRole);
+      sendMessageNotification(messageController.text, widget.receiver);
       messageController.clear();
+
     }
 
   }
@@ -42,6 +76,7 @@ class _ChatPageState extends State<ChatPage> {
   void getUserRole() async
   {
     userRole = (await DatabaseMethods().getUserRole())!;
+    name = (await DatabaseMethods().getUserName())!;
     setState(() {
 
     });
@@ -102,29 +137,38 @@ class _ChatPageState extends State<ChatPage> {
           ],
         ),
 
-        body: Column(
+        body: Stack(
+          fit: StackFit.expand,
           children: [
-            Expanded(
-              child: _buildMessageList(),
+            Image(image: AssetImage("assets/images/chatWallpaper.jpg"),
+              fit: BoxFit.cover,
+
             ),
-            Row(
+            Column(
               children: [
                 Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.only(left: 20,bottom: 30),
-                    child: CustomTextField(
-                      hintText: "Message",
-                      icon: const Icon(Icons.message_outlined),
-                      obscureText: false,
-                      textEditingController: messageController,
-                    ),
-                  ),
+                  child: _buildMessageList(),
                 ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.only(left: 20,bottom: 30),
+                        child: CustomTextField(
+                          hintText: "Message",
+                          icon: const Icon(Icons.message_outlined),
+                          obscureText: false,
+                          textEditingController: messageController,
+                        ),
+                      ),
+                    ),
 
-                Container(
-                    margin: const EdgeInsets.only(bottom: 30, left: 20, right: 20),
-                    child: IconButton(icon:const Icon(Icons.send, size: 30,), onPressed: sendMessage,
-                    ))],
+                    Container(
+                        margin: const EdgeInsets.only(bottom: 30, left: 20, right: 20),
+                        child: IconButton(icon:const Icon(Icons.send, size: 30,), onPressed: sendMessage,
+                        ))],
+                ),
+              ],
             ),
           ],
         ),

@@ -185,7 +185,7 @@ class _DoctorPageBodyState extends State<DoctorPageBody> {
                       Navigator.of(context).push(MaterialPageRoute(builder: (
                           context) =>
                           ChatPage(receiver: documentSnapshot["name"],
-                              recieverId: documentSnapshot.id)));
+                              recieverId: documentSnapshot.id, recieverToken: documentSnapshot["deviceToken"],)));
                     },
                     child: Container(
                       height: 130,

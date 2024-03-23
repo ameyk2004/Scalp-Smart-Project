@@ -171,77 +171,86 @@ class _ChatBotPageState extends State<ChatBotPage> {
                       MaterialPageRoute(builder: (context) => DoctorDetailsPage()),
                     );
                   },
-                  icon: const Icon(Icons.message_outlined, size: 35),
+                  icon: const Icon(Icons.message_outlined, size: 35, color: Colors.white60,),
                 ),
               ),
             ),
           ],
         ),
 
-        body: Column(
+        body: Stack(
+          fit: StackFit.expand,
           children: [
-            Visibility(
-              visible: _isLoading,
-              child: LinearProgressIndicator(
-                color: appBarColor,
-              ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: chat_history.length,
-                controller: _scrollController,
-                itemBuilder: (BuildContext context, int index) {
+            Image(image: AssetImage("assets/images/chatWallpaper.jpg"),
+              fit: BoxFit.cover,
 
-                  return Column(
-                    children: [
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: ChatBubble(
-                          message: chat_history[index]["prompt"]!,
-                          isCurrentUser: true,
-                          timestamp: '',
-                        ),
-                      ),
-                      Align(
-                          alignment: Alignment.centerLeft,
-                          child: ChatBubble(
-                            message: chat_history[index]["response"]!,
-                            isCurrentUser: false,
-                            timestamp: '',
-                          )),
-                    ],
-                  );
-                },
-              ),
             ),
-            Row(
+            Column(
               children: [
-                Expanded(
-                  child: Container(
-                    margin: EdgeInsets.only(left: 20, bottom: 30),
-                    child: CustomTextField(
-                      hintText: "Message",
-                      icon: Icon(Icons.message_outlined),
-                      obscureText: false,
-                      textEditingController: textEditingController,
-                    ),
+                Visibility(
+                  visible: _isLoading,
+                  child: LinearProgressIndicator(
+                    color: appBarColor,
                   ),
                 ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                      margin: EdgeInsets.only(bottom: 30, left: 20, right: 20),
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.send,
-                          size: 30,
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: chat_history.length,
+                    controller: _scrollController,
+                    itemBuilder: (BuildContext context, int index) {
+
+                      return Column(
+                        children: [
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: ChatBubble(
+                              message: chat_history[index]["prompt"]!,
+                              isCurrentUser: true,
+                              timestamp: '',
+                            ),
+                          ),
+                          Align(
+                              alignment: Alignment.centerLeft,
+                              child: ChatBubble(
+                                message: chat_history[index]["response"]!,
+                                isCurrentUser: false,
+                                timestamp: '',
+                              )),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        margin: EdgeInsets.only(left: 20, bottom: 30),
+                        child: CustomTextField(
+                          hintText: "Message",
+                          icon: Icon(Icons.message_outlined),
+                          obscureText: false,
+                          textEditingController: textEditingController,
                         ),
-                        onPressed: () {
-                          sendPromptToChatBot(
-                              textEditingController.text.toString());
-                        },
-                      )),
-                )
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                          margin: EdgeInsets.only(bottom: 30, left: 20, right: 20),
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.send,
+                              size: 30,
+                            ),
+                            onPressed: () {
+                              sendPromptToChatBot(
+                                  textEditingController.text.toString());
+                            },
+                          )),
+                    )
+                  ],
+                ),
               ],
             ),
           ],
