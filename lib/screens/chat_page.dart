@@ -3,10 +3,12 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scalp_smart/colors.dart';
 import 'package:scalp_smart/screens/doctor_screens/image_thread_sql.dart';
+import 'package:scalp_smart/screens/video_call_page.dart';
 import 'package:scalp_smart/services/firebase_service/database.dart';
 import 'package:scalp_smart/widgets/chat_bubble.dart';
 import 'package:intl/intl.dart';
@@ -40,7 +42,7 @@ class _ChatPageState extends State<ChatPage> {
       "to": widget.recieverToken,
       "notification": {
         "title": name,
-        "body": message
+        "body": message,
       }
     };
 
@@ -68,9 +70,7 @@ class _ChatPageState extends State<ChatPage> {
       await chatService.sendMessage(widget.recieverId, messageController.text, userRole);
       sendMessageNotification(messageController.text, widget.receiver);
       messageController.clear();
-
     }
-
   }
 
   void getUserRole() async
@@ -86,6 +86,7 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     getUserRole();
     super.initState();
+
   }
 
   @override
@@ -95,27 +96,56 @@ class _ChatPageState extends State<ChatPage> {
         appBar: AppBar(
           backgroundColor: buttonColor,
           scrolledUnderElevation: 0.0,
-          toolbarHeight: MediaQuery.of(context).size.height*0.17,
-          title: Column(
+          toolbarHeight: MediaQuery.of(context).size.height * 0.17,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Align(
-                child: CircleAvatar(
-                  backgroundImage: userRole == "Doctor" ? NetworkImage("https://i.pinimg.com/736x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg") : NetworkImage("https://santevitahospital.com/img/vector_design_male_11zon.webp"),
-                  radius: MediaQuery.of(context).size.height*0.055 ,
+              Expanded(
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      backgroundImage: userRole == "Doctor"
+                          ? NetworkImage(
+                          "https://i.pinimg.com/736x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg")
+                          : NetworkImage(
+                          "https://santevitahospital.com/img/vector_design_male_11zon.webp"),
+                      radius: MediaQuery.of(context).size.height * 0.055,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(widget.receiver,
+                            style: AppWidget.boldTextStyle().copyWith(
+                                fontSize: MediaQuery.of(context).size.height * 0.028,
+                                color: Colors.white)),
+
+                        IconButton(onPressed: () {
+                          sendMessageNotification("Please Recieve the call", name);
+                          final senderId = auth.currentUser!.uid;
+                          List<String> userIds = [senderId, widget.recieverId];
+                          userIds.sort();
+                          String videoCallId = userIds.join("_");
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (context) =>CallPage(callID: videoCallId)));
+                        }, icon: Icon(Icons.call, color: Colors.white60, size: 30,))
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(height: 10,),
-              Text(widget.receiver, style: AppWidget.boldTextStyle().copyWith(fontSize: MediaQuery.of(context).size.height*0.028, color: Colors.white))
             ],
           ),
           leading: Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                icon: const Icon(Icons.arrow_back_ios_new, size: 30),
-              )
+            alignment: Alignment.topRight,
+            child: IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(Icons.arrow_back_ios_new, size: 30),
+            ),
           ),
           actions: [
             Padding(
@@ -127,7 +157,9 @@ class _ChatPageState extends State<ChatPage> {
                     print(userRole);
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ImageThreadSQL(uid: userRole == "Doctor" ? widget.recieverId : auth.currentUser!.uid)),
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ImageThreadSQL(uid: userRole == "Doctor" ? widget.recieverId : auth.currentUser!.uid)),
                     );
                   },
                   icon: const Icon(Icons.image_search, size: 35, color: Colors.white60,),
@@ -172,6 +204,8 @@ class _ChatPageState extends State<ChatPage> {
             ),
           ],
         ),
+      
+
 
 
     );

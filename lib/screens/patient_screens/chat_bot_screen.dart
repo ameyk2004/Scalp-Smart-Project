@@ -11,6 +11,8 @@ import 'package:scalp_smart/services/details/api_key.dart';
 import 'package:scalp_smart/widgets/chat_bubble.dart';
 import 'package:scalp_smart/widgets/widget_support.dart';
 import 'package:http/http.dart' as http;
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 import '../../widgets/customTextField.dart';
 import '../../widgets/loadingScreen.dart';
@@ -67,13 +69,42 @@ class _ChatBotPageState extends State<ChatBotPage> {
   @override
   void initState() {
     fetchChatHistory();
+    initSpeechToText();
     super.initState();
   }
 
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final speechToText = SpeechToText();
+  String lastWords = "";
   List<Map<String, dynamic>> chat_history = [];
+
+  Future<void> initSpeechToText() async {
+    speechToText.initialize();
+    setState(() {
+    });
+  }
+
+  Future startListening() async {
+    await speechToText.listen(onResult: _onSpeechResult);
+    setState(() {});
+  }
+
+  Future stopListening() async {
+    await speechToText.stop();
+    print(lastWords);
+    setState(() {});
+  }
+
+  void _onSpeechResult(SpeechRecognitionResult result) {
+    setState(() {
+      print(result);
+      lastWords = result.recognizedWords;
+      textEditingController.text = lastWords;
+    });
+  }
+
 
 
   TextEditingController textEditingController = TextEditingController();
@@ -228,7 +259,24 @@ class _ChatBotPageState extends State<ChatBotPage> {
                         margin: EdgeInsets.only(left: 20, bottom: 30),
                         child: CustomTextField(
                           hintText: "Message",
-                          icon: Icon(Icons.message_outlined),
+                          icon: IconButton(icon : Icon(Icons.mic) ,
+                              onPressed: () async {
+                                if (await speechToText.hasPermission &&
+                                    speechToText.isNotListening) {
+                                   await startListening();
+                                }
+                                else if(speechToText.isListening)
+                                  {
+                                    await stopListening();
+                                    print(lastWords);
+                                  }
+                                else
+                                  {
+                                    initSpeechToText();
+                                  }
+                              }
+
+                          ),
                           obscureText: false,
                           textEditingController: textEditingController,
                         ),

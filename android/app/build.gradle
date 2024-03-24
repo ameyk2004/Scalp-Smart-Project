@@ -1,3 +1,19 @@
+buildscript {
+    ext.kotlin_version = '1.8.0'
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.3.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+        // Support for notification
+        classpath 'com.google.gms:google-services:4.3.14'
+    }
+}
+
 plugins {
     id "com.android.application"
     id "kotlin-android"
@@ -32,7 +48,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "com.ameytech.scalp_smart"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 34
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -63,9 +79,10 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.release
+
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
         }
     }
 }

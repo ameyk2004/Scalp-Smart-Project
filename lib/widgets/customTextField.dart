@@ -3,7 +3,7 @@ import 'package:scalp_smart/widgets/widget_support.dart';
 
 class CustomTextField extends StatelessWidget {
   final String hintText;
-  final Icon icon;
+  final Widget icon;
   final bool obscureText;
   final TextEditingController textEditingController;
 
@@ -17,6 +17,7 @@ class CustomTextField extends StatelessWidget {
       controller: textEditingController,
       decoration: InputDecoration(
           hintText: hintText,
+
           hintStyle: AppWidget.boldTextStyle(),
           prefixIcon: icon,
           border: OutlineInputBorder(borderSide: const BorderSide(width: 1), borderRadius: BorderRadius.circular(15))
