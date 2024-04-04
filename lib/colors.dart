@@ -7,3 +7,4 @@ const appBarColor = Color.fromRGBO(11, 96, 176,1);
 
 const buttonColor = Color.fromRGBO(22, 72, 99, 1);
 const dialogboxColor = Color.fromRGBO(196, 235, 255, 1);
+const answerColor = Color.fromRGBO(241, 238, 220, 0.8);

@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:scalp_smart/services/chat_service/push_notifications.dart';
+import '../services/chat_service/push_notifications.dart';
+
 
 class AuthService extends ChangeNotifier{
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -34,8 +36,9 @@ class AuthService extends ChangeNotifier{
       print("Online Updated");
 
       return userCredential;
-    } catch (e) {
-      throw e.toString();
+    } on FirebaseAuthException catch (e) {
+      print("Error ${e.code}");
+      throw e.code;
     }
   }
 
@@ -47,11 +50,13 @@ class AuthService extends ChangeNotifier{
         'online' : true,
         'deviceToken' : deviceToken,
       });
+      FirebaseMessaging.instance.subscribeToTopic("notifications");
       print("Online Updated");
       print(deviceToken);
       return userCredential;
-    } catch (e) {
-      throw e.toString();
+    } on FirebaseAuthException catch (e) {
+      print("Error ${e.code}");
+      throw e.code;
     }
   }
 
@@ -62,8 +67,9 @@ class AuthService extends ChangeNotifier{
       });
       print("Offline Updated");
       return await _auth.signOut();
-    } catch (e) {
-      throw e.toString();
+    } on FirebaseAuthException catch (e) {
+      print("Error ${e.code}");
+      throw e.code;
     }
   }
 

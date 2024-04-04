@@ -192,7 +192,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       child: Row(
 
                         children: [
-                          Text("Aldready Have an Account ?", style: TextStyle(fontSize: 18), textAlign: TextAlign.center,),
+                          Text("Already Have an Account ?", style: TextStyle(fontSize: 18), textAlign: TextAlign.center,),
                           GestureDetector(
                               onTap: ()
                               {

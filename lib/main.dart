@@ -28,17 +28,17 @@ class MyApp extends StatelessWidget {
         ),
         StreamProvider(
             create: (context) =>
-                context.watch()<AuthService>().authStateChanges,
+            context.watch()<AuthService>().authStateChanges,
             initialData: null)
       ],
       child: MaterialApp(
         title: 'Scalp Smart',
         theme: ThemeData(
-          useMaterial3: true,
-          appBarTheme: AppBarTheme(
-            backgroundColor: Colors.white
-          ),
-          scaffoldBackgroundColor: Colors.white
+            useMaterial3: true,
+            appBarTheme: AppBarTheme(
+                backgroundColor: Colors.white
+            ),
+            scaffoldBackgroundColor: Colors.white
         ),
         home:
         ShowCaseWidget( builder : Builder( builder : (_) => AuthWrapper(tutorial: false,))),
@@ -47,4 +47,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

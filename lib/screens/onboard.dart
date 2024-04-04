@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scalp_smart/colors.dart';
 import 'package:scalp_smart/screens/patient_screens/login_page.dart';
+import 'package:scalp_smart/services/chat_service/push_notifications.dart';
 import 'package:scalp_smart/widgets/content_model.dart';
 import 'package:scalp_smart/widgets/widget_support.dart';
 
@@ -14,11 +15,12 @@ class Onboard extends StatefulWidget {
 class _OnboardState extends State<Onboard> {
   int currentIndex = 0;
   late PageController _controller;
+  PushNotifications notifications = PushNotifications();
 
   @override
   void initState() {
     _controller = PageController(initialPage: 0);
-
+    notifications.requestpermission();
     super.initState();
   }
 

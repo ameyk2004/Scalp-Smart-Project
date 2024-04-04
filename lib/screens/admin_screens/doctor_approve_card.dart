@@ -4,10 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:scalp_smart/colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../auth/authServices.dart';
+import '../../colors.dart';
 import '../../widgets/widget_support.dart';
 
 class DoctorCard extends StatelessWidget {
@@ -59,7 +59,7 @@ class DoctorCard extends StatelessWidget {
 
       UserCredential userCredential = await authService.createNewDoctor(
           email, name, qualification, location, experience);
-      await authService.loginEmailPassword("admin@scalpsmart.com", "Admin1234");
+      await authService.loginEmailPassword("admin@scalpsmart.in", "Admin123");
       await FirebaseFirestore.instance.collection("Pending_Approvals")
           .doc(id)
           .delete();

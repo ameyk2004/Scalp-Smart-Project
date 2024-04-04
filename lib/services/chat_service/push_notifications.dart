@@ -3,10 +3,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 class PushNotifications{
   static final firebaseMessaging = FirebaseMessaging.instance;
 
-  static Future initialize() async
+   Future requestpermission() async
   {
 
-    await firebaseMessaging.requestPermission(
+    NotificationSettings settings = await firebaseMessaging.requestPermission(
          alert : true,
          announcement : true,
          badge : true,
@@ -16,9 +16,11 @@ class PushNotifications{
          sound : true
     );
 
-      final deviceToken = await firebaseMessaging.getToken();
-      await FirebaseMessaging.instance.getAPNSToken();
-      print("Device Token : $deviceToken");
+    if(settings.authorizationStatus == AuthorizationStatus.authorized)
+      {
+        print("authorised");
+      }
+
 
   }
 

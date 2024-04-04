@@ -3,20 +3,22 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scalp_smart/colors.dart';
 import 'package:scalp_smart/screens/doctor_screens/image_thread_sql.dart';
-import 'package:scalp_smart/screens/video_call_page.dart';
 import 'package:scalp_smart/services/firebase_service/database.dart';
 import 'package:scalp_smart/widgets/chat_bubble.dart';
 import 'package:intl/intl.dart';
 import 'package:scalp_smart/widgets/widget_support.dart';
 
 import '../services/chat_service/chat_service.dart';
+import '../services/firebase_service/database.dart';
 import '../widgets/customTextField.dart';
 import 'package:http/http.dart' as http;
+
+import 'doctor_screens/image_thread_sql.dart';
 
 class ChatPage extends StatefulWidget {
   final String receiver;
@@ -121,16 +123,6 @@ class _ChatPageState extends State<ChatPage> {
                             style: AppWidget.boldTextStyle().copyWith(
                                 fontSize: MediaQuery.of(context).size.height * 0.028,
                                 color: Colors.white)),
-
-                        IconButton(onPressed: () {
-                          sendMessageNotification("Please Recieve the call", name);
-                          final senderId = auth.currentUser!.uid;
-                          List<String> userIds = [senderId, widget.recieverId];
-                          userIds.sort();
-                          String videoCallId = userIds.join("_");
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (context) =>CallPage(callID: videoCallId)));
-                        }, icon: Icon(Icons.call, color: Colors.white60, size: 30,))
                       ],
                     ),
                   ],

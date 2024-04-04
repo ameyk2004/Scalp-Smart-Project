@@ -1,10 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flashy_tab_bar2/flashy_tab_bar2.dart';
 import 'package:flutter/material.dart';
 import 'package:scalp_smart/auth/authServices.dart';
 import 'package:scalp_smart/colors.dart';
 import 'package:scalp_smart/screens/patient_screens/chat_bot_screen.dart';
 import 'package:scalp_smart/screens/patient_screens/google_map_screen.dart';
 import 'package:scalp_smart/screens/patient_screens/login_page.dart';
+import 'package:scalp_smart/screens/patient_screens/questionaire.dart';
 import 'package:scalp_smart/screens/patient_screens/shop_page.dart';
 import 'package:scalp_smart/screens/patient_screens/self_assesment_page.dart';
 import 'package:scalp_smart/widgets/customButton.dart';
@@ -56,7 +58,9 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> pages = [
     HomePageBody(),
     SelfAssessmentPage(),
+    QuestionairePage(),
     ShopPage(),
+
   ];
 
   void showTutorialDialog() {
@@ -174,44 +178,82 @@ class _HomePageState extends State<HomePage> {
 
       body: pages[selectedPage],
 
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: selectedPage,
-        backgroundColor: Colors.grey.shade300,
-        onTap: navigateTo,
-        showUnselectedLabels: false,
-        showSelectedLabels: false,
+      bottomNavigationBar: FlashyTabBar(
+        height: 70,
+        iconSize: 30,
+        selectedIndex: selectedPage,
+        showElevation: true,
+        onItemSelected: (index) => setState(() {
+          selectedPage = index;
+        }),
         items: [
-          BottomNavigationBarItem(
-            label: "Home",
-            icon: Icon(Icons.home, size: 30,),
+          FlashyTabBarItem(
+            activeColor: appBarColor,
+            inactiveColor: Colors.grey,
+            icon: Icon(Icons.home_outlined),
+            title: Text('Home', style: TextStyle(fontSize: 17),),
           ),
-          BottomNavigationBarItem(
-            label: "Predict",
-            icon: Container(
-              width: 80,
-              height: 50,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    colors: [
-
-                      appBarColor,
-                      Colors.deepPurple.shade300,
-
-                    ]
-
-                ),
-                  borderRadius: BorderRadius.circular(25)),
-
-                child: Icon(Icons.insights_outlined, color: Colors.white,size: 30,)
-            ),
+          FlashyTabBarItem(
+            inactiveColor: Colors.grey,
+            activeColor: appBarColor,
+            icon: Icon(Icons.insights_outlined),
+            title: Text('Predict', style: TextStyle(fontSize: 17),),
           ),
-          BottomNavigationBarItem(
-              label: "Shop",
-              icon: Icon(Icons.shopping_bag,size: 30,)
-
+          FlashyTabBarItem(
+            activeColor: appBarColor,
+            inactiveColor: Colors.grey,
+            icon: Icon(Icons.quiz_outlined),
+            title: Text('Quiz', style: TextStyle(fontSize: 17),),
           ),
+          FlashyTabBarItem(
+            activeColor: appBarColor,
+            inactiveColor: Colors.grey,
+            icon: Icon(Icons.shopping_bag_outlined),
+            title: Text('Shop', style: TextStyle(fontSize: 17),),
+          ),
+
+
         ],
       ),
+
+      // bottomNavigationBar: BottomNavigationBar(
+      //   currentIndex: selectedPage,
+      //   backgroundColor: Colors.grey.shade300,
+      //   onTap: navigateTo,
+      //   showUnselectedLabels: false,
+      //   showSelectedLabels: false,
+      //   items: [
+      //     BottomNavigationBarItem(
+      //       label: "Home",
+      //       icon: Icon(Icons.home, size: 30,),
+      //     ),
+      //     BottomNavigationBarItem(
+      //       label: "Predict",
+      //       icon: Container(
+      //         width: 80,
+      //         height: 50,
+      //         decoration: BoxDecoration(
+      //           gradient: LinearGradient(
+      //               colors: [
+      //
+      //                 appBarColor,
+      //                 Colors.deepPurple.shade300,
+      //
+      //               ]
+      //
+      //           ),
+      //             borderRadius: BorderRadius.circular(25)),
+      //
+      //           child: Icon(Icons.insights_outlined, color: Colors.white,size: 30,)
+      //       ),
+      //     ),
+      //     BottomNavigationBarItem(
+      //         label: "Shop",
+      //         icon: Icon(Icons.shopping_bag,size: 30,)
+      //
+      //     ),
+      //   ],
+      // ),
     );
   }
 }

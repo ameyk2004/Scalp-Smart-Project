@@ -1,8 +1,8 @@
 import 'dart:convert';
-
+import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image/image.dart' as img;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -56,11 +56,39 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
 
     if (result != null) {
       File file = File(result.files.single.path!);
-      setState(() {
-        _image = file;
-        message = 'Image picked successfully!';
-        annotatedImage = null;
-      });
+      final orSize = await file.length();
+      print('Size of picked image: ${orSize} bytes');
+      Uint8List bytes = await file.readAsBytes();
+      Uint8List uint8List = Uint8List.fromList(bytes);
+      img.Image? originalImage = img.decodeImage(uint8List);
+
+      if (originalImage != null) {
+        int newWidth = 150;
+        int newHeight = ((originalImage.height * newWidth) / originalImage.width).round();
+
+        img.Image resizedImage = img.copyResize(originalImage, width: newWidth, height: newHeight);
+        Uint8List compressedBytes = img.encodeJpg(resizedImage);
+
+        print('Size of compressed image: ${compressedBytes.length} bytes');
+
+        File resizedFile = File(file.path.replaceAll('.jpg', '_resized.jpg'));
+
+        if (compressedBytes.length < orSize) {
+          await resizedFile.writeAsBytes(compressedBytes);
+          setState(() {
+            _image = resizedFile;
+            message = 'Image picked and resized successfully!';
+            annotatedImage = null;
+          });
+        } else {
+          // If compression does not reduce size, use original image
+          setState(() {
+            _image = file;
+            message = 'Image picked and resized successfully!';
+            annotatedImage = null;
+          });
+        }
+      }
     } else {
       setState(() {});
     }
@@ -79,12 +107,35 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
         _image = File(pickedFile.path);
         message = "Uploaded Successfully !";
         annotatedImage = null;
-
-        if (_image != null) {
-          List<int> imageBytes = _image!.readAsBytesSync();
-          String base64Image = base64Encode(imageBytes);
-        }
       });
+
+      print("Original image size: ${_image!.lengthSync()} bytes");
+
+      // Read the image file
+      Uint8List imageBytes = await _image!.readAsBytes();
+      img.Image? originalImage = img.decodeImage(imageBytes);
+
+      if (originalImage != null) {
+        // Calculate height while preserving aspect ratio
+        int newWidth = 150; // Desired width
+        int newHeight = (originalImage.height * newWidth / originalImage.width)
+            .round();
+
+        // Compress the image
+        img.Image compressedImage = img.copyResize(
+            originalImage, width: newWidth, height: newHeight);
+
+        // Save the compressed image
+        File compressedFile = File(
+            _image!.path.replaceAll('.jpg', '_compressed.jpg'));
+        await compressedFile.writeAsBytes(img.encodeJpg(compressedImage));
+
+        setState(() {
+          _image = compressedFile;
+        });
+
+        print("Compressed image size: ${_image!.lengthSync()} bytes");
+      }
 
       print("Update successful!");
     }
@@ -93,16 +144,12 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
   Future<void> sendImage() async {
     if (_image == null) return; // Check if an image is selected
 
-    setState(() {
-    });
+    setState(() {});
 
-    var url = Uri.parse(
-        '$UPLOAD_IMAGE_URL${_auth.currentUser!.uid}');
-
+    var url = Uri.parse('$UPLOAD_IMAGE_URL${_auth.currentUser!.uid}');
     var request = http.MultipartRequest('POST', url);
     request.files.add(await http.MultipartFile.fromPath('image', _image!.path));
     var response = await request.send();
-
 
     if (response.statusCode == 200) {
       message = 'Image Sent Successfully !!';
@@ -112,8 +159,7 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
       print(message);
     }
 
-    setState(() {
-    });
+    setState(() {});
   }
 
   Future getAnnotedImage() async {
@@ -134,6 +180,7 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
               .collection("Users")
               .doc(_auth.currentUser!.uid)
               .update({
+            "stage" : message,
             "image": annotedImageFile,
           });
         }
